@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+</head>
+<body>
+
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" onsubmit="return false;">
+
+            <input type="text" name="className" id="className" placeholder="请输入目录名" autocomplete="off"
+                   class="layui-input">
+            <button class="layui-btn" onclick="showTableData()" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i>
+            </button>
+            <button class="layui-btn" onclick="addFirstClass()">
+                <i class="layui-icon"></i>添加
+            </button>
+        </form>
+
+    </div>
+
+    <table id="demo" lay-filter="test"></table>
+
+
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs  layui-btn-danger" lay-even="del" onclick="deleteClass(this)">删除</a>
+</script>
+
+<script>
+    // 加载界面时调用
+    showTableData();
+
+    function showTableData() {
+
+        layui.use('table', function () {
+            var table = layui.table;
+            var className = $("#className").val();
+
+            var tableIns = table.render({
+                elem: "#demo",
+                height: 450,
+                url: '/admin/getFirstClass', // 数据接口
+                page: true,     // 开启分页
+                loading: true,  // 是否显示加载条
+                toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+                where: {className: className}, // 带参数进行查询
+                defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                    title: '提示'
+                    , layEvent: 'LAYTABLE_TIPS'
+                    , icon: 'layui-icon-tips'
+                }],
+                cols: [
+                    [// 表头
+                        {field: 'id', title: 'ID', sort: true, align: "center"},
+                        {field: 'className', title: '一级目录', sort: true, align: "center"},
+                        {fixed: 'right', title: '操作', algin: 'center', toolbar: '#barDemo', align: "center"}
+                    ]
+                ]
+                , id: 'testReload'
+            })
+
+
+        })
+    }
+
+    // 点击删除事件
+    function deleteClass(obj) {
+        layer.confirm('确定删除?', {title: '提示'}, function (index) {
+            //do something
+            console.log($(obj).parent().parent().parent().find("td[data-field=id]").children().html());
+            // 获取当前行的ID
+            var classId = $(obj).parent().parent().parent().find("td[data-field=id]").children().html();
+            $.ajax({
+                url: "/admin/delete",
+                data: {classId: classId},
+                dataType: "json",
+                method: "post",
+                success: function (data) {
+                    if (data.status == 0) {
+                        layer.msg("删除成功");
+                        location.reload();
+                    } else if (data.status == 1) {
+                        layer.msg("删除失败");
+                    } else if (data.status == 2) {
+                        layer.msg("当前节点含有子节点，不能删除");
+                    }
+
+                }
+            })
+            layer.close(index);
+        });
+
+
+    }
+
+    // 添加一级目录名称
+    function addFirstClass() {
+        layer.prompt({
+            value: '',
+            title: '请输入一级分类名称',
+        }, function (value, index, elem) {
+            // alert(value); //得到value
+
+            $.ajax({
+                url: "/admin/insert",
+                data: {
+                    className: value
+                },
+                method: "post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == 0) {
+                        layer.msg("添加成功");
+                        layer.close(index);
+                        showTableData();
+                    } else if (data.status == 1) {
+                        layer.msg("该分类已存在");
+                    } else if (data.status == 2) {
+                        layer.msg("添加失败");
+                    }
+
+                }
+            })
+        });
+
+    }
+
+</script>
+
+
+</body>
+</html>

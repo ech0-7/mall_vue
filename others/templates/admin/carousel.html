@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.6/vue.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+		<script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.1/index.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+		<style>
+
+
+			[v-cloak] {
+      display: none;
+    }
+    .el-input-number--mini {
+      width: 90px;
+      line-height: 26px;
+    }
+    .el-table td {
+      padding: 5px 0;
+    }
+    .el-table th>.cell {
+      text-align: center;
+    }
+    .el-table .cell {
+      text-align: center;
+    }
+    .el-dialog {
+      margin: 0px auto 10px;
+    }
+		* {
+			box-sizing: border-box;
+		}
+		
+		.image-box>img {
+			max-width: 100%;
+			vertical-align: middle;
+			width: 175px;
+			height: 112px;
+		}
+		
+		.btn {
+			/* display: inline-block; */
+			padding: 5px 10px;
+			font-size: 10px;
+			color: #fff;
+			border: 2px solid #4d92d9;
+			background-color: #4d92d9;
+			text-decoration: none;
+			transition: 0.4s;
+			border-radius: 3px;
+		}
+		
+		.btn:hover {
+			background-color: transparent;
+			color: #4d92d9;
+			transition: 0.4s;
+		}
+		
+		.text-desc {
+			position: absolute;
+			left: 0;
+			top: 0;
+			background-color: #fff;
+			height: 100%;
+			opacity: 0;
+			width: 100%;
+			padding: 10px;
+		}
+		
+		.port-1 {
+			float: left;
+			width: 100%;
+			position: relative;
+			overflow: hidden;
+			text-align: center;
+			/* border: 4px solid rgba(255, 255, 255, 0.9); */
+			width: 175px;
+			height: 112px;
+			border-radius: 3px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+		}
+		.el-image{
+			box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+			
+		}
+		
+		.port-1 .text-desc {
+			opacity: 0.9;
+			top: -100%;
+			transition: 0.5s;
+			color: #000;
+			padding: 38px 20px 20px;
+		}
+		
+		.port-1 img {
+			transition: 0.5s;
+		}
+		
+		.port-1:hover img {
+			transform: scale(1.2);
+		}
+		
+		.port-1.effect-2 .text-desc {
+			top: auto;
+			bottom: 100%;
+		}
+		
+		.port-1.effect-2:hover .text-desc {
+			bottom: 0;
+		}
+		
+		.text-desc > a{
+			cursor: pointer;
+		}
+		.port-1 > .el-image {
+			#overflow: revert;
+		}
+		#nav{
+			margin-left: 95%;
+		}
+		/* nav */
+		.x-nav {
+			    position: relative;
+			    border-bottom: 1px solid #e5e5e5;
+			    line-height: 39px;
+			    height: 60px;
+					font-size: 15px;
+			}
+			.x-so input.layui-input {
+			    width: 150px;
+					margin-bottom: 20px;
+			}
+			.x-so input.layui-input, .x-so input.layui-btn {
+				display: inline-block;
+			}
+			.layui-btn {
+				
+			}
+			.el-button+.el-button {
+			    margin-left: 5px;
+			}
+  </style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="x-nav" style="padding: 10px 20px">
+				<form class="layui-form layui-col-md12 x-so" onsubmit="return false;">
+
+					<!-- <input type="text" name="username" id="findByUsername" placeholder="请输入用户名或姓名" autocomplete="off" class="layui-input"> -->
+					<el-input placeholder="请输入内容" v-model="searchContent" style="width: 250px;" clearable>
+					</el-input>
+					<el-button type="primary" plain icon="el-icon-search"></el-button>
+					<el-button type="primary" plain icon="el-icon-circle-plus-outline" @click='insertOpenDialog'>添加</el-button>
+
+					<el-button type="primary" icon="el-icon-refresh" style="float:right" plain onclick="javascript:location.replace(location.href);"></el-button>
+
+					<!-- 	<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+					 title="刷新">
+						<i class="layui-icon" style="line-height:30px">ဂ</i>
+					</a> -->
+				</form>
+
+			</div>
+			<div style="clear: both;"></div>
+			<el-table :data="items" :fit='true' type=index :default-sort="{prop: 'endTime', order: 'descending'}">
+				<!--    <el-table-column label="ID">-->
+				<!--      <template slot-scope="scope">-->
+				<!--        <span style="margin-left: 10px">{{ scope.row.id }}</span>-->
+				<!--      </template>-->
+				<!--    </el-table-column>-->
+				<el-table-column label="图片名称">
+					<template slot-scope="scope">
+						<div>{{ scope.row.name }}</div>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="图片">
+					<template slot-scope="scope">
+						<div>
+							<el-image class='el-image' style="width: 150px; height: 90px; border-radius: 3px;" :src=scope.row.url
+							 :preview-src-list="getPrivewImages(scope.$index)" qfit="cover">
+							</el-image>
+						</div>
+					</template>
+				</el-table-column>
+				<el-table-column label="跳转链接">
+					<template slot-scope="scope">
+						<div>{{ scope.row.jumpLink }}</div>
+					</template>
+				</el-table-column>
+				<el-table-column label="权重" sortable sort-by='weight'>
+					<template slot-scope="scope">
+						<el-input-number size="mini" v-model=scope.row.weight @change="changeWeight(scope.row.id,scope.row.weight)" :min="1"
+						 :max="10" label="描述文字"></el-input-number>
+					</template>
+				</el-table-column>
+
+
+				<el-table-column label="开始时间" sortable sort-by='beginTime'>
+					<template slot-scope="scope">
+						<!-- <i class="el-icon-time"></i> -->
+						<span style="margin-left: 10px">{{ scope.row.beginTime }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column label="结束时间" sortable sort-by='endTime'>
+					<template slot-scope="scope">
+						<span style="margin-left: 10px">{{ scope.row.endTime }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column label="状态" width="80"  :filters="[{ text: '开启', value: '1' }, { text: '关闭', value: '0' }]"
+				 :filter-method="filterTag"   >
+					<template slot-scope="scope">
+						<el-tooltip :content="scope.row.enable==0?'点击启用':'点击关闭'" placement="top">
+							<el-switch :key=scope.row.id v-model=scope.row.enable @change="changeEnable(scope.row.id,scope.row.enable)"
+							 :active-value=1 :inactive-value=0>
+							</el-switch>
+						</el-tooltip>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<el-button size="mini" @click="openDialog(scope.row.id,scope.$index)">编辑</el-button>
+						<el-button size="mini" type="danger" @click="deleteById(scope.row.id,scope.$index)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+			<!-- 轮播图管理弹窗 -->
+			<el-dialog :title="dialogType==1?'添加轮播图':'轮播图管理'" :visible.sync="dialogFormVisible" top='1vh'>
+				<el-form :model="form">
+					<el-form-item label="" :label-width="formLabelWidth">
+						<div class="dialog-img-div">
+							<div class="port-1 effect-2">
+								<!-- <img :src="form.url" alt="Image-2"> -->
+								<el-image style="width: 175px; height: 112px" :src="dialogImgUrl" fit="fit" @load="imgLoadSuccess" @error="imgLoadError"></el-image>
+
+								<div class="text-desc">
+									<!-- 	<h5>2018.1.3</h3>
+									<p>福道</p> -->
+									<a onclick="clickUpload()" class="btn">点击更换图片</a>
+								</div>
+							</div>
+						</div>
+					</el-form-item>
+
+					<el-form-item label="ID" :label-width="formLabelWidth" v-if='dialogType==2'>
+						<el-input v-model="form.id" disabled autocomplete="off"></el-input>
+					</el-form-item>
+
+					<el-form-item label="图片名称" :label-width="formLabelWidth">
+						<el-input placeholder="图片名称" v-model=form.name autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="图片链接" :label-width="formLabelWidth">
+						<el-input placeholder="图片链接" v-model=form.url @change='dialogImgUrlChange()'>
+						</el-input>
+					</el-form-item>
+					<el-form-item label="跳转链接" :label-width="formLabelWidth">
+						<el-input placeholder="跳转链接" v-model=form.jumpLink>
+						</el-input>
+					</el-form-item>
+
+					<el-form-item label="展示权重" :label-width="formLabelWidth">
+						<el-input-number size="mini" v-model=form.weight :min="1" :max="10" label="描述文字"></el-input-number>
+					</el-form-item>
+					<el-form-item label="是否启用" :label-width="formLabelWidth">
+						<el-tooltip :content="'是否启用'" placement="top">
+							<el-switch v-model=form.enable :active-value=1 :inactive-value=0>
+							</el-switch>
+						</el-tooltip>
+					</el-form-item>
+
+					<el-form-item label="展示时间" :label-width="formLabelWidth">
+						<div class="block">
+							<el-date-picker v-model="timeValue" type="datetimerange" range-separator="至" start-placeholder="开始日期"
+							 end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']">
+							</el-date-picker>
+						</div>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="dialogFormVisible = false">取 消</el-button>
+					<el-button type="primary" @click="insertCarousel" v-if="dialogType==1" :loading=dialogBtnLoding>添 加</el-button>
+					<el-button type="primary" @click="changeCarousel" v-else :loading=dialogBtnLoding>更 改</el-button>
+				</div>
+			</el-dialog>
+
+			<!-- 文件上传功能 -->
+			<el-upload style='display: none;' class="upload-demo" :action="uploadUrl" :on-success='uploadSuccess' :on-preview="handlePreview"
+			 :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="3" :on-exceed="handleExceed" :file-list="fileList">
+				<el-button size="small" type="primary">点击上传</el-button>
+			</el-upload>
+		</div>
+
+		<div class="bookstack-viewer" style="display: none;">
+			<img style="margin-top: 270px" src="">
+		</div>
+
+	</body>
+</html>
+
+<script>
+	let app = new Vue({
+		el: '#app',
+		data: {
+			// serviceUrl: 'http://8.131.77.32:8080', // 服务器IP和地址 记得要改！！！
+			// serviceUrl: 'http://127.0.0.1:8080',
+			serviceUrl: '',
+			uploadUrl: '/uploadCarousel',
+			fileList: [],
+			imgUrl: '',
+			items: [],
+			dialogImgUrl: '//imgcps.jd.com/ling4/100009691096/5Lqs6YCJ5aW96LSn/5L2g5YC85b6X5oul5pyJ/p-5f3a47329785549f6bc7a6e1/4a956b6c/cr/s/q.jpg',
+			dialogImgLoadState: false,   // 弹窗中图片是否加载成功
+			dialogTableVisible: false,
+			dialogFormVisible: false, // 控制表单是否显示
+			changeIndex: 0, // 用来表示被修改的条数号，用来更新数据
+			dialogType: 0, // 弹窗管理的类型 1 代表‘添加’ 2 代表‘修改’
+			searchContent: '', // 搜索内容
+			dialogBtnLoding: false, // 提交按钮的加载条件
+			form: {
+				id: '',
+				name: '',
+				date1: '',
+				date2: '',
+				enable: true,
+				weight: 1,
+				startTime: '',
+				endTime: '',
+				url: '//imgcps.jd.com/ling4/100009691096/5Lqs6YCJ5aW96LSn/5L2g5YC85b6X5oul5pyJ/p-5f3a47329785549f6bc7a6e1/4a956b6c/cr/s/q.jpg',
+			},
+			srcList: [],  // 图片预览数据
+			formLabelWidth: '120px',
+			timeValue: [],
+			temp: {},
+		},
+		mounted() { // 钩子函数 链式编程 ES6新特性
+			// 获取表格轮播图信息
+			axios.get(this.serviceUrl + '/admin/carousel/getCarouselData?page=1&limit=10')
+				.then(
+					response => {
+						console.log(response.data.data)
+						this.items = response.data.data;
+						for (let item of this.items) {
+							this.srcList.push(item.url)
+						}
+					}
+				);
+		},
+		methods: {
+
+			// 把当前点击的图片调整到第一个
+			getPrivewImages(index) {
+				let tempImgList = [...this.srcList]; //所有图片地址
+				if (index == 0) return tempImgList;
+				// 调整图片顺序，把当前图片放在第一位
+				let start = tempImgList.splice(index);
+				let remain = tempImgList.splice(0, index);
+				return start.concat(remain); //将当前图片调整成点击缩略图的那张图片
+			},
+			changeEnable(id, enable) {
+				// 传入轮播ID和状态
+				const params = new URLSearchParams();
+				params.append('id', id);
+				params.append('enable', enable);
+				axios.post(this.serviceUrl + '/admin/carousel/changeEnable', params)
+			},
+			changeWeight(id, weight) {
+				// 传入轮播ID和权重
+				const params = new URLSearchParams();
+				params.append('id', id);
+				params.append('weight', weight);
+				axios.post(this.serviceUrl + '/admin/carousel/changeWeight', params)
+			},
+			// 当对轮播图的信息进行修改并提交后，回调该方法修改表格中的数据
+			getchange() {
+				const params = new URLSearchParams();
+				params.append('id', '9a52e046b443e4fc82c14a9220802d92');
+				axios.post(this.serviceUrl + '/admin/carousel/getCarouselById', params).then(
+					response => {
+						console.log(response.data)
+						this.form = response.data;
+					}
+				);
+			},
+			// 用来验证提交的数据的正确性
+			veritySubmitData() {				
+				// 验证图片
+				if (this.form.url == null || this.form.url == '' ) {
+					this.$message.error(`请选择图片`);
+					return false;
+				}
+				// 验证图片地址的正确性
+				if (this.dialogImgLoadState == false){
+					this.$message.error('请输入正确的图片路径');
+					return false;
+				}
+				// 验证图片名称
+				if (this.form.name == null || this.form.name == '') {
+					this.$message.error(`请输入图片名称`);
+					return false;
+				}
+
+				// 验证权重
+				if (this.form.weight == null || this.form.weight == '') {
+					this.$message.error(`请选择权重`);
+					return false;
+				}
+
+				// 验证时间
+				if (this.timeValue == null || this.timeValue == '') {
+					this.$message.error(`请选择起始与结束时间`);
+					return false;
+				}
+				return true;
+			},
+			// 提交添加的信息
+			insertCarousel() {
+				if (this.veritySubmitData() == false) {
+					return;
+				}
+				this.dialogBtnLoding = true;
+
+				let beginTime = this.timeValue[0];
+				let endTime = this.timeValue[1];
+				if ("string" != typeof(beginTime)) {
+					// 如果不是string类型则转成string类型
+					beginTime = dateFormat("YYYY-mm-dd HH:MM:SS", beginTime)
+					endTime = dateFormat("YYYY-mm-dd HH:MM:SS", endTime)
+				}
+				const params = new URLSearchParams();
+				params.append('name', this.form.name);
+				params.append('url', this.form.url);
+				params.append('jumpLink', this.form.jumpLink);
+				params.append('weight', this.form.weight);
+				params.append('enable', this.form.enable);
+				params.append('beginTime', beginTime);
+				params.append('endTime', endTime);
+				axios.post(this.serviceUrl + '/admin/carousel/insertCarousel', params).then(
+					response => {
+						console.log(response.data)
+						console.log(response.data.code)
+						console.log(response.data.msg)
+						if (response.data.code == '0') {
+							this.$message.success(`添加成功`);
+							this.temp = response.data.msg;
+							let jsonObj1 = JSON.parse(response.data.msg);
+							this.items.push(jsonObj1)
+							this.dialogFormVisible = false;
+						} else {
+							this.$message.error(`添加失败`);
+						}
+						this.dialogBtnLoding = false;
+					}
+				);
+			},
+			// 提交更改的信息
+			changeCarousel() {
+				if (this.veritySubmitData() == false) {
+					return;
+				}
+				this.dialogBtnLoding = true;
+				let beginTime = this.timeValue[0];
+				let endTime = this.timeValue[1];
+				if ("string" != typeof(beginTime)) {
+					// 如果不是string类型则转成string类型
+					beginTime = dateFormat("YYYY-mm-dd HH:MM:SS", beginTime)
+					endTime = dateFormat("YYYY-mm-dd HH:MM:SS", endTime)
+				}
+
+				const params = new URLSearchParams();
+				params.append('id', this.form.id);
+				params.append('name', this.form.name);
+				params.append('url', this.form.url);
+				params.append('jumpLink', this.form.jumpLink);
+				params.append('weight', this.form.weight);
+				params.append('enable', this.form.enable);
+				params.append('beginTime', beginTime);
+				params.append('endTime', endTime);
+				axios.post(this.serviceUrl + '/admin/carousel/changeOneCarouselData', params).then(
+					response => {
+						console.log(response.data)
+						this.form = response.data;
+						// 修改表格上的数据
+						this.getCarouselById2();
+						this.dialogBtnLoding = false;
+					}
+				);
+
+				this.dialogFormVisible = false;
+
+			},
+			// 打开"添加"弹窗
+			insertOpenDialog() {
+				this.timeValue = '';
+				this.dialogType = 1;
+				this.form = {
+					weight: 1
+				};
+
+				this.dialogImgUrl = '';
+				// 显示
+				this.dialogFormVisible = true;
+			},
+			// 打开"编辑"弹窗
+			openDialog(id, index) {
+				this.dialogType = 2;
+				this.changeIndex = index;
+				// 获取数据
+				this.getCarouselById(id);
+
+				// 设置开始结束时间
+				this.timeValue = [];
+				this.timeValue.push(this.items[index].beginTime);
+				this.timeValue.push(this.items[index].endTime);
+				// 显示
+				this.dialogFormVisible = true;
+			},
+
+
+			// 通过ID获取一条；轮播的信息
+			getCarouselById(id) {
+				const params = new URLSearchParams();
+				params.append('id', id);
+				axios.post(this.serviceUrl + '/admin/carousel/getCarouselById', params).then(
+					response => {
+						console.log(response.data)
+						this.form = response.data;
+							this.dialogImgUrl = this.form.url;
+					}
+				);
+			},
+
+			// 通过ID获取一条轮播的信息 并且修改至表格中
+			getCarouselById2() {
+				const params = new URLSearchParams();
+				console.log("传入的：" + this.items[this.changeIndex].id)
+				params.append('id', this.items[this.changeIndex].id);
+				axios.post(this.serviceUrl + '/admin/carousel/getCarouselById', params).then(
+					response => {
+						console.log("回调")
+						console.log(response.data);
+						// this.items[this.changeIndex] = response.data;
+						this.$set(this.items, this.changeIndex, response.data);
+						// 更新预览的数据
+						this.srcList = [];
+						for (let item of this.items) {
+							this.srcList.push(item.url)
+						}
+					}
+				);
+			},
+
+			// 根据ID删除一条轮播数据
+			deleteById(id, index) {
+				if (this.items.length <= 1) {
+					this.$message.error(`请至少保留一条数据`);
+					return;
+				}
+				this.$confirm('确定删除?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					// 确定
+					const params = new URLSearchParams();
+					console.log("传入的：" + this.items[this.changeIndex].id)
+					params.append('id', id);
+					axios.post(this.serviceUrl + '/admin/carousel/deleteCarouselById', params).then(
+						response => {
+							let data = response.data;
+							if (data.code == 0) {
+								this.$message.success(`删除成功`);
+								console.log("删除成功");
+								this.items.splice(index, 1);
+							} else {
+								this.$message.error(`删除失败`);
+								console.log("删除失败")
+							}
+						}
+					);
+				}).catch(() => {
+					// 取消
+					return;
+				});
+			},
+			handleRemove(file, fileList) {
+				console.log(file, fileList);
+			},
+			handlePreview(file) {
+				console.log(file);
+			},
+			handleExceed(files, fileList) {
+				this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件`);
+			},
+			beforeRemove(file, fileList) {
+				return this.$confirm(`确定移除 ${ file.name }？`);
+			},
+			// 文件上传成功后回调
+			uploadSuccess(response, file, fileList) {
+				console.log(response)
+				console.log(response.code)
+				
+				if (response.code == 0){
+					this.$message.success(`文件上传成功`);
+					this.form.url = response.msg;
+					this.form.name = response.respMap.fileName;
+					this.dialogImgUrl = response.msg;
+					this.fileList = [];					
+				}else{
+						this.$message.error(`文件上传失败`);
+					}
+				
+			},
+			// 当图片地址输入框失去焦点后触发
+			dialogImgUrlChange() {
+				this.dialogImgUrl = this.form.url
+			},
+			filterTag(value, row, column) {
+				console.log(row.enable)
+				return row.enable == value;
+			},
+			// 弹窗的图片加载成功调用
+			imgLoadSuccess(e) {
+				this.dialogImgLoadState = true;
+					console.log("图片加载成功")
+			},
+			// 弹窗的图片加载失败调用
+			imgLoadError(e) {
+				this.dialogImgLoadState = false;
+				console.log("图片加载失败")
+			}
+		}
+	})
+
+	// 广告
+	// http://img14.360buyimg.com/babel/jfs/t1/148958/27/18380/72511/5fd6dd25E19d22bb9/933b915d6526b58d.jpg!q70.jpg.webp
+</script>
+<script>
+	function dateFormat(fmt, date) {
+		let ret;
+		const opt = {
+			"Y+": date.getFullYear().toString(), // 年
+			"m+": (date.getMonth() + 1).toString(), // 月
+			"d+": date.getDate().toString(), // 日
+			"H+": date.getHours().toString(), // 时
+			"M+": date.getMinutes().toString(), // 分
+			"S+": date.getSeconds().toString() // 秒
+			// 有其他格式化字符需求可以继续添加，必须转化成字符串
+		};
+		for (let k in opt) {
+			ret = new RegExp("(" + k + ")").exec(fmt);
+			if (ret) {
+				fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+			};
+		};
+		return fmt;
+	}
+	// 模拟点击文件上传按钮
+	function clickUpload() {
+		// document.getElementsByClassName('el-upload').click()
+		$('.el-upload').click();
+	}
+</script>

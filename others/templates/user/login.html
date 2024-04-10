@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>用户登陆</title>
+  <link rel="icon" href="../img/icon.png" type="image/png">
+  <link rel="stylesheet" href="../css/user/login.css">
+
+  <script type="text/javascript" src="../js/lib/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="../js/lib/layer.js"></script>
+</head>
+<body>
+<div class="title">
+  <div class="container">
+    <div class="title-left">
+      <img src="../img/IconImg/logo.png">
+      <span>欢迎登录</span>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="container">
+    <div class="content-login">
+      <div class="content-login-password">
+        <div class="content-login-header">
+          <span class="content-login-header-password">密码登录</span>
+          <span class="content-login-header-message">短信登录</span>
+        </div>
+        <div class="content-login-error">
+          <!--       请输入用户名或密码          -->
+        </div>
+        <div class="content-login-content">
+          <div class="content-login-content-text">
+            <span><img src="../img/iconImg/用户名(grey).png" width="100%" height="100%"></span>
+            <input type="text" name="uname" id="uname" value="" placeholder="用户名/登录手机"/>
+          </div>
+          <div class="content-login-content-password">
+            <span><img src="../img/iconImg/密码(grey).png" width="100%" height="100%"></span>
+            <input type="password" name="password" id="password" value="" placeholder="密码"/>
+          </div>
+          <div class="content-login-content-submit">
+            <button>登 录</button>
+          </div>
+          <div class="content-login-content-forget">
+            <a href="#" class="content-login-content-forget-password">忘记密码</a>
+            <a href="/user/register" class="content-login-content-forget-register">立即注册</a>
+          </div>
+        </div>
+        <div class="content-login-footer">
+          <img src="../img/iconImg/QQ.png" width="100%" height="100%" alt="QQ" title="QQ">
+          <img src="../img/iconImg/微信.png" width="100%" height="100%" alt="微信" title="微信">
+          <img src="../img/iconImg/微博.png" width="100%" height="100%" alt="微博" title="微博">
+        </div>
+      </div>
+      <div class="content-login-message" style="display: none;">
+        <div class="content-message-header">
+          <span class="content-message-header-password">密码登录</span>
+          <span class="content-message-header-message">短信登录</span>
+        </div>
+        <div class="content-message-error">
+          <!--                    请输入短信验证码-->
+        </div>
+        <div class="content-message-content">
+          <div class="content-message-content-text">
+            <span><img src="../img/iconImg/手机(grey).png" width="100%" height="100%"></span>
+            <input type="text" name="" id="phone" value="" placeholder="请输入手机号"/>
+          </div>
+          <div class="content-message-content-password">
+            <span><img src="../img/iconImg/验证码(grey).png" width="100%" height="100%"></span>
+            <input type="text" name="" id="btn-code" value="" placeholder="请输入验证码"/>
+            <button>获取验证码</button>
+          </div>
+          <div class="content-message-content-submit">
+            <button>登 录</button>
+          </div>
+          <div class="content-login-content-forget">
+            <a href="/user/register" class="content-login-content-forget-register">立即注册</a>
+          </div>
+        </div>
+        <div class="content-login-footer">
+          <img src="../img/iconImg/QQ.png" width="100%" height="100%" alt="QQ" title="QQ">
+          <img src="../img/iconImg/微信.png" width="100%" height="100%" alt="微信" title="微信">
+          <img src="../img/iconImg/微博.png" width="100%" height="100%" alt="微博" title="微博">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">
+
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+  $(function () {
+    var message = false;
+    var submitflag = false;
+    var num = 60;
+    $(".content-login-header-message").click(function () {
+      $(".content-login-message").css({'display': "block"});
+      $(".content-login-password").css({"display": "none"});
+    })
+    $(".content-message-header-password").click(function () {
+      $(".content-login-message").css({'display': "none"});
+      $(".content-login-password").css({"display": "block"});
+    })
+    $("#phone").blur(function () {
+      var val = $("#phone").val();
+      if (val.length != 11 && val.length > 1) {
+        $(".content-message-error").text("请输入有效的手机号码");
+        $(".content-message-error").css({"background": "#FFEBEB"});
+      } else if (val.length == 11) {
+        $(".content-message-error").text("");
+        $(".content-message-error").css({"background": "white"});
+        submitflag = true;
+      }
+    })
+    $(".content-login-content-submit button").click(function () {
+      var uname = $("#uname").val();
+      var password = $("#password").val();
+      $.ajax({
+        type: 'post',
+        url: "/user/LoginByPass",
+        data: {"uname": uname, "password": password},
+        success: function (data) {
+          if (data != "登陆成功") {
+            $(".content-login-error").text(data);
+            $(".content-login-error").css({"background": "#FFEBEB"});
+          } else {
+            $(".content-login-error").text(data);
+            $(".content-login-error").css({"background": "white"});
+            window.location.href = "/user/toIndex";
+          }
+        }
+      })
+
+    })
+    $(".content-message-content-submit button").click(function () {
+      var phone = $("#phone").val();
+      var code = $("#btn-code").val();
+      console.log("手机号码：" + phone);
+      console.log("验证码" + code);
+      if (submitflag) {
+        if (code != "") {
+          $.ajax({
+            type: 'post',
+            url: "/user/doLogin",
+            data: {"phone": phone, "code": code},
+            success: function (data) {
+              if (data != "登陆成功") {
+                $(".content-message-error").text(data);
+                $(".content-message-error").css({"background": "#FFEBEB"});
+              } else {
+                window.location.href = "/user/toIndex";
+              }
+            }
+          })
+        } else {
+          $(".content-message-error").text("请输入验证码");
+          $(".content-message-error").css({"background": "#FFEBEB"});
+        }
+      } else {
+        $(".content-message-error").text("请输入有效的手机号码");
+        $(".content-message-error").css({"background": "#FFEBEB"});
+      }
+
+
+    })
+    $(".content-message-content-password button").click(function () {
+      var phone = $("#phone").val();
+      console.log(phone);
+      if (!(/^1[3456789]\d{9}$/.test(phone))) {
+        alert("手机号码有误，请重填");
+        return false;
+      } else {
+        if (num == 60) {
+          // 发送短信验证码
+          $.ajax({
+            url: "/user/userLoginSendSms",
+            data: {
+              phone: phone
+            },
+            success: function (data) {
+              layer.msg(data);
+            }
+          })
+          message = true;
+        }
+
+      }
+    })
+
+    window.setInterval(function () {
+      if (message && num >= 0) {
+        $(".content-message-content-password button").text(num + "秒后重新发送");
+        num--;
+      }
+      if (num == -1) {
+        message = false;
+        num = 60;
+        $(".content-message-content-password button").text("重新发送");
+      }
+    }, 1000);
+
+    $(".title-left").click(function () {
+
+      window.location.href = "/user/toIndex";
+
+    })
+
+  })
+</script>

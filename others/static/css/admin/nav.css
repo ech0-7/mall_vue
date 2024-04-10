@@ -1,0 +1,17 @@
+.x-nav {
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 39px;
+    height: 60px;
+    font-size: 15px;
+}
+.x-so input.layui-input {
+    width: 150px;
+    margin-bottom: 20px;
+}
+.x-so input.layui-input, .x-so input.layui-btn {
+    display: inline-block;
+}
+.el-button+.el-button {
+    margin-left: 5px;
+}

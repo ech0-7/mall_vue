@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加收货地址</title>
+    <link rel="icon" href="../img/icon.png" type="image/png">
+</head>
+<style type="text/css">
+    .address{
+        padding: 20px;
+    }
+    .address-name{
+        margin: 10px 10px 10px 25px;
+        color: #999;
+    }
+    .address-name input{
+        outline: none;
+        border: none;
+        border-bottom: 1px solid black;
+        height: 20px;
+        width: 300px;
+    }
+    .address-number{
+        margin: 0.625rem;
+        color: #999;
+    }
+    .address-number input{
+        outline: none;
+        border: none;
+        border-bottom: 1px solid black;
+        height: 20px;
+        width: 300px;
+    }
+    .address-addr{
+        margin: 10px 10px;
+        color: #999;
+    }
+    .firstAddr{
+        margin-left: 10px;
+    }
+    .address-addr select{
+        height: 20px;
+        width: 100px;
+        outline: none;
+        margin-left: 10px;
+        text-indent: 2px;
+    }
+    .address-area textarea{
+        width: 367px;
+        height: 100px;
+        margin-left: 10px;
+        outline: none;
+        resize: none;
+    }
+    .address-button{
+        margin: 20px 10px;
+    }
+    .address-button button{
+        width: 373px;
+        height: 35px;
+        cursor: pointer;
+
+    }
+</style>
+<body>
+<div class ="address">
+    <div class = "address-name">
+        <span>收货人:</span>
+        <input type = "text" />
+    </div>
+    <div class = "address-number">
+        <span>联系电话:</span>
+        <input type = "text"/>
+    </div>
+    <div class = "address-addr">
+        <span>收货地址:</span>
+        <select class ="firstAddr">
+            <option>请选择</option>
+            <option>福建省</option>
+        </select>
+        <select class ="secondAddr">
+            <option>请选择</option>
+        </select>
+    </div>
+    <div class = "address-area">
+        <textarea></textarea>
+    </div>
+    <div class = "address-button">
+        <button>添加</button>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../js/lib/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+
+        $.ajax({
+               type:'post',
+               url:'/firstAddr',
+               success:function(data){
+                   for(var i = 0; i<data.length;i++){
+                       var option = $("<option>"+data[i].addrName+"</option>")
+                       $(".firstAddr").append(option);
+                   }
+               }
+        })
+
+
+        $(".firstAddr").change(function(){
+
+             if($(this).val() != "请选择"){
+                    $.ajax({
+                         type:'post',
+                         url:'/secondAddr',
+                         data:{"name":$(".firstAddr").val()},
+                         success:function(data){
+                             $(".secondAddr").children("option").remove();
+                               for(var i = 0; i<data.length;i++){
+                                   var option = $("<option>"+data[i].addrName+"</option>")
+                                   $(".secondAddr").append(option);
+                               }
+                        }
+                    })
+
+             }else{
+                 $(".secondAddr").children("option").remove();
+                 $(".secondAddr").append("<option>请选择</option>");
+             }
+        })
+          $(".address-button button").click(function(){
+              var AddrObj = new Object();
+              var name = $(".address-name input").val();
+              var number =$(".address-number input").val();
+              var firstAddr = $(".firstAddr").val();
+              var secondAddr = $(".secondAddr").val();
+              var area = $(".address-area textarea").val();
+              AddrObj.addrName = name;
+              AddrObj.addrProvince = firstAddr;
+              AddrObj.addrCity = secondAddr;
+              AddrObj.addrArea= area;
+              AddrObj.addrNumber = number;
+              var jsonObj = JSON.stringify(AddrObj);
+              $.ajax({
+                  async:false,
+                  type:'post',
+                  url:'/address/addAddr',
+                  data:{"jsonObj":jsonObj},
+                  success:function(data){
+                      if(data == "成功"){
+                          parent.layer.close(parent.layer.index);
+                      }else{
+                          alert(data);
+                      }
+                  }
+
+              })
+          })
+    })
+</script>

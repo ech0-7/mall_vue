@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/admin/common.css">
+  <link rel="stylesheet" href="../../css/admin/user.css">
+  <!-- 引入组件库 -->
+  <!--  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.6/vue.js"></script>-->
+  <!--  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>-->
+  <script src="../../js/lib/vue.js"></script>
+  <script src="../../js/lib/axios.js"></script>
+
+  <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.1/index.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+  <script src="../../js/network/common-request.js"></script>
+
+</head>
+<body>
+
+<div id="app">
+  <el-container>
+    <el-header>
+      <el-input class="head-input" placeholder="账号/姓名/昵称" v-model="searchContent" clearable>
+      </el-input>
+      <el-button type="primary" plain icon="el-icon-search" @click="searchClick()"></el-button>
+      <el-button icon="el-icon-plus" type="primary" @click="openDialog()" plain>添加</el-button>
+
+      <el-button type="primary" icon="el-icon-refresh" style="float:right" plain
+                 onclick="javascript:location.replace(location.href);"></el-button>
+
+    </el-header>
+    <el-main>
+      <el-table :data="itemList" :fit='true' type=index border>
+        <el-table-column label="编号" prop="userId" align="center"></el-table-column>
+        <el-table-column label="账号" prop="username" align="center"></el-table-column>
+        <el-table-column label="昵称" prop="nickName" align="center"></el-table-column>
+        <el-table-column label="姓名" prop="realName" align="center"></el-table-column>
+        <el-table-column label="邮箱" prop="email" align="center"></el-table-column>
+        <el-table-column label="是否启用" width="80" align="center">```
+          <template slot-scope="scope">
+            <div>
+              <el-tooltip :content="'是否启用'" placement="top">
+                <el-switch v-model=scope.row.status @change="updateStatus(scope.row.userId,scope.row.status,scope.$index)"
+                           :active-value=1
+                           :inactive-value=0>
+                </el-switch>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
+        <!--        <el-table-column label="编号" prop="userId"></el-table-column>-->
+
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope" >
+            <el-button size="mini" @click="openDialog(scope.row.id,scope.$index)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="deleteById(scope.row.userId,scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-main>
+
+
+    <el-footer>
+      <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[10, 20, 30, 50]"
+              :page-size=pageSize
+              layout="total, sizes, prev, pager, next, jumper"
+              :total=total class="el-pagination">
+      </el-pagination>
+    </el-footer>
+  </el-container>
+
+  <el-dialog title="弹窗" :visible.sync="dialogFormVisible">
+    <el-form :model="form">
+      <el-form-item label="ID" :label-width="formLabelWidth" v-show="false">
+        <el-input v-model="form.id" disabled autocomplete="off"></el-input>
+      </el-form-item>
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="insertItem()">添 加</el-button>
+    </div>
+  </el-dialog>
+</div>
+
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      searchContent: '',
+      itemList: [],
+      dialogFormVisible: false,
+      form: {},
+      formLabelWidth: '120px',
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+    },
+    mounted() {
+      this.getUserList();
+    },
+
+    methods: {
+      getUserList() {
+        const url = '/manage/user/getUserList';
+        const params = new URLSearchParams({
+          limit: this.pageSize,
+          currentPage: this.currentPage,
+          username: this.searchContent,
+
+        })
+        request({url, params}).then(res => {
+          this.itemList = res.data.userList;
+          this.total = res.data.total;
+          console.log('/manage/user/getUserList')
+          console.log(res)
+        })
+      },
+      updateStatus(id, status,index) {
+        this.itemList[index].status = status==0 ? 1:0
+        this.$confirm('是否要修改该状态?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const url = '/manage/user/updateStatus';
+          const params = new URLSearchParams();
+          params.append('userId', id);
+          params.append('status', status);
+          request({url, params}).then((res) => {
+            if (res != null) {
+              this.$message.success('修改成功')
+              this.itemList[index].status = status
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      deleteById(id, index) {
+        this.$confirm('确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const url = '/manage/user/deleteById'
+          const params = new URLSearchParams();
+          params.append('userId', id);
+          request({url, params}).then(res => {
+            if (res) {
+              this.$message.success('删除成功')
+              this.itemList.splice(index, 1)
+            }
+          })
+        })
+      },
+
+      // 查找
+      searchClick(){
+        this.getUserList()
+      },
+
+
+      openDialog() {
+        this.dialogFormVisible = true;
+      },
+      insertItem() {
+        this.dialogBtnLoding = true;
+      },
+
+      // 分页
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      }
+
+    }
+  })
+</script>
+
+</body>
+</html>

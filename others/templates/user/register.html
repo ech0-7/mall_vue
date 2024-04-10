@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户注册</title>
+  <link rel="icon" href="../img/icon.png" type="image/png">
+
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../css/register.css">
+  <link rel="stylesheet" href="../css/footer.css">
+  <!-- layui样式 -->
+  <link rel="stylesheet" href="../lib/layui/css/layui.css">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.6/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+  <script src="../lib/layui/layui.all.js" charset="utf-8"></script>
+  <style>
+    #verifyUsername-tip {
+      display: block;
+      /*visibility: hidden;*/
+      /* visibility: visible; */
+      margin: 10px 0 10px 100px;
+      height: 20px;
+      font-size: 14px;
+    }
+
+    #verifyPhone-tip {
+      display: block;
+      /*visibility: hidden;*/
+      /* visibility: visible; */
+      margin: 10px 0 20px 100px;
+      height: 20px;
+      font-size: 14px;
+      color: red;
+    }
+
+    .userful-btn {
+      background-color: rgb(255, 94, 0);
+      color: white;
+    }
+
+  </style>
+</head>
+
+<body>
+<div id="app">
+  <header>
+    <nav>
+      <img src="../img/icon.png" alt="">
+      <p>
+        玛卡巴卡商城，请&nbsp;<a id="nav-login" href="/user/login">登录</a>&nbsp;<a id="nav-register" href="#">免费注册</a>
+      </p>
+      <ul>
+        <li><a href="#">关于我们</a></li>
+        <li><a href="#">购物指南</a></li>
+        <li><a href="#">会员中心</a></li>
+        <li><a href="#">购物车</a></li>
+        <li><a href="#">我的订单</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="sec">
+      <h1>用户注册</h1>
+      <!-- <form> -->
+      <div class="content">
+        <!-- 用户名 -->
+        <div class="div-input" id="username_div">
+          <label for="username">用户名</label>
+          <input type="text" class="Input textInput" id="username" v-model="username" @change="verifyUsername()"
+                 placeholder="用户名">
+        </div>
+        <span id="verifyUsername-tip" :style="{color:usernameStatus?'green':'red'}">{{verifyUsernameTip}}</span>
+
+        <!-- 手机号码 -->
+        <div class="div-input" id="phone_div">
+          <label for="username">手机号码</label>
+          <input type="text" class="Input textInput" id="phone" v-model="phone" placeholder="手机号码"
+                 @blur="verifyPhone()">
+        </div>
+        <span id="verifyPhone-tip">{{verifyPhoneTip}}</span>
+        <!--        <span class="ver-prompt">请输入手机号码</span>-->
+        <!-- 密码 -->
+        <div class="div-input" id="password_div">
+          <label for="password">密码</label>
+          <input type="password" class="Input textInput" id="password" placeholder="密码" minlength="6"
+                 maxlength="20" v-model="password">
+        </div>
+        <span class="ver-prompt">请输入长度为6-20个字符的密码</span>
+
+        <!-- 确认密码 -->
+        <div class="div-input" id="confirm_div">
+          <label for="confirm">确认密码</label>
+          <input type="password" class="Input textInput" id="confirm" placeholder="确认密码" minlength="6"
+                 maxlength="20" v-model="passwordAgain">
+        </div>
+        <span class="ver-prompt">请重新输入密码，保证两次输入密码一致</span>
+
+        <!-- 验证码 -->
+        <div class="div-input" id="code_div">
+          <label for="code">验证码</label>
+          <div class="code_content">
+            <input type="text" class="Input codeInput" id="code" placeholder="验证码" minlength="6"
+                   maxlength="6">
+            <button class="btn" id="btn-code" @click="getSmsCode">获取验证码</button>
+          </div>
+          <span class="ver-prompt">请点击按钮获取验证码</span>
+        </div>
+        <el-button class="btn" id="register" @click="register()" type="warning">注册</el-button>
+        <!--        <button class="btn layui-btn" id="register" @click="register()">注册</button>-->
+      </div>
+      <!-- </form> -->
+    </section>
+  </main>
+  <footer>
+    <p>
+      <a href="javascript:void(0)">关于我们</a>
+      <a href="javascript:void(0)">联系我们</a>
+      <a href="javascript:void(0)">问题反馈</a>
+      <a href="javascript:void(0)">修改建议</a>
+      <em>&copy;2020 ^-^版权所有</em>
+    </p>
+  </footer>
+</div>
+
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="../js/register.js"></script>
+</html>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      phone: '',
+      username: '',
+      password: '',
+      passwordAgain:'',
+      verifyUsernameTip: '',
+      verifyPhoneTip: '',
+      verifyPhoneShow: false,
+      phoneStatus: false,
+      usernameStatus: false,
+      btnStatus: true,
+      getVerifyCodeCount: 0,
+      // serviceUrl: 'http://127.0.0.1:8080',
+      serviceUrl: '',
+    },
+    methods: {
+      // 点击“获取”验证码按钮
+      getSmsCode() {
+        if (this.phoneStatus == false) {
+          this.$message.error('请更换号码注册,或者直接登录');
+          return;
+        }
+        let phone = $("#phone").val();
+        if (!(/^1[3456789]\d{9}$/.test(phone))) {
+          this.$message.error("手机号码有误，请重填");
+          return false;
+        }
+        this.getVerifyCodeCount++;
+        // 发送短信验证码
+        const params = new URLSearchParams();
+        params.append('phone', phone)
+        axios.post(this.serviceUrl + '/user/sendSms', params).then(
+            response => {
+              console.log(response.data);
+              let data = response.data
+              if (data.code != 0) {
+                this.$message.error(data.msg)
+              } else {
+                this.$message.success('短信发送成功');
+              }
+            });
+      },
+      // 验证用户名是否可以使用
+      verifyUsername() {
+        console.log(this.username)
+        if (this.username.length < 1) {
+          this.verifyUsernameTip = '请输入用户名';
+          this.usernameStatus = false;
+          return false;
+        }
+        const params = new URLSearchParams();
+        params.append('username', this.username)
+        axios.post(this.serviceUrl + '/user/verifyUsername', params).then(
+            response => {
+              console.log(response.data);
+              let data = response.data
+              if (data.code != 0) {
+                this.verifyUsernameTip = data.msg;
+                this.usernameStatus = false;
+              } else {
+                this.verifyUsernameTip = '用户名可以使用';
+                this.usernameStatus = true;
+              }
+            });
+      },
+      // 验证号码是否被注册过
+      verifyPhone() {
+        const params = new URLSearchParams();
+        params.append('phone', this.phone)
+        axios.post(this.serviceUrl + '/user/verifyPhone', params).then(
+            response => {
+              console.log(response.data);
+              let data = response.data
+              if (data.code != 0) {
+                this.verifyPhoneTip = data.msg;
+                this.phoneStatus = false;
+              } else {
+                this.verifyPhoneTip = '';
+                this.phoneStatus = true;
+              }
+            });
+      },
+      // 点击“注册”按钮
+      register() {
+        if (this.username == '') {
+          this.$message.error('请输入用户名');
+          return false;
+        }
+        if (this.username.length > 7) {
+          this.$message.error('用户名过长，长度应该不超过7');
+          return false;
+        }
+        if (this.usernameStatus == false) {
+          this.$message.error('用户名已存在，请重新选择');
+          return false;
+        }
+        if (!(/^1[3456789]\d{9}$/.test(this.phone))) {
+          this.$message.error("手机号码有误，请重填");
+          return false;
+        }
+        if (this.password.length < 6) {
+          this.$message.error("密码长度必须超过6位");
+          return false;
+        }
+        if (this.password != this.passwordAgain) {
+          this.$message.error("确认密码和密码不一致");
+          return false;
+        }
+
+        let verifyCode = $("#code").val();
+        if (this.getVerifyCodeCount == 0) {
+          this.$message.error("请先获取验证码");
+        }
+        if (verifyCode.length < 6) {
+          this.$message.error("请先输入验证码");
+        }
+        const params = new URLSearchParams();
+        params.append('verifyCode', verifyCode)
+        params.append('phone', this.phone)
+        params.append('password', this.password)
+        params.append('username', this.username)
+        axios.post(this.serviceUrl + '/user/doRegister', params).then(
+            response => {
+              console.log(response.data);
+              let data = response.data
+              if (data.code != 0) {
+                this.$message.error(data.msg)
+              } else {
+                this.$message.success('注册成功');
+                window.location.href = "/user/login";
+              }
+            });
+
+      }
+    }
+  })
+</script>

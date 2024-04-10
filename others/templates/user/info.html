@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>个人中心</title>
+  <link rel="icon" href="../img/icon.png" type="image/png">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../css/user/info.css">
+
+  <!-- 引入组件库 -->
+  <!-- <script src="https://unpkg.com/element-ui/lib/index.js"></script> -->
+  <script src="../js/lib/vue.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.1/index.js"></script>
+  <script type="text/javascript" src="../lib/layui/layui.js"></script>
+  <script type="text/javascript" src="../js/lib/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <div class="header">
+    <div class="container">
+      <div class="header-nav-left">
+        <ul>
+          <li class="header-nav-left-area">中国大陆</li>
+          <li class="header-nav-left-login"><a href="/user/login">您好,{{nickName}}</a></li>
+          <li class="header-nav-left-register"><a href="#">免费注册</a></li>
+        </ul>
+      </div>
+      <div class="header-nav-right">
+        <ul>
+          <li><a href="#">关于我们</a></li>
+          <li><a href="#">购物指南</a></li>
+          <li><a href="#">会员中心</a></li>
+          <li><a href="/shoppingCart">购物车</a></li>
+          <li><a href="/user/toPersonalOrder">我的订单</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="header-main">
+      <div class="container">
+        <div class="header-main-left">
+          个人中心
+        </div>
+        <div class="header-main-center">
+          <div class="header-main-center-height">
+            <div class="header-main-center-height-search">
+              <input type="text">
+              <span><img src="../img/iconImg/01.png" width="100%" height="100%"></span>
+              <button><img src="../img/iconImg/search.png" width="100%" height="100%"></button>
+            </div>
+            <div class="header-main-center-height-cart">
+              <!--              <button><img src="../img/iconImg/购物车.png"><span>我的购物车</span></button>-->
+              <el-badge :value=shoppingCartCount class="item">
+                <el-button size="small" icon="el-icon-shopping-cart-2">我的购物车</el-button>
+              </el-badge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-footer">
+      <div class="header-footer-top"></div>
+      <div class="header-footer-bottom"></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="content">
+      <div class="content-left">
+        <div class="content-left-img">
+          <img src="../img/IconImg/logo.png" width="100%" height="100%">
+        </div>
+        <div class="content-left-order">我的订单</div>
+        <div class="content-left-address">收货地址</div>
+        <div class="content-left-message">个人信息</div>
+        <!--        <div class="content-left-idea">意见建议</div>-->
+      </div>
+      <div class="content-right">
+        <div class="content-right-title">个人信息</div>
+        <div class="content-right-data">
+          <div class="info-content">
+            <el-form ref="form" :model="form" label-width="80px">
+              <el-form-item label="登录账号">
+                <el-input v-model="form.username" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="昵称">
+                <el-input v-model="form.nickName"></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="form.email"></el-input>
+              </el-form-item>
+              <el-form-item label="性别">
+                <el-radio-group v-model="form.sex">
+                  <el-radio :label="0">未知</el-radio>
+                  <el-radio :label="1">男</el-radio>
+                  <el-radio :label="2">女</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="userUpdate">修改</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      nickName: '',
+      inputUsername: '',
+      shoppingCartCount: 0,
+      // serviceUrl: 'http://127.0.0.1:8080',
+      serviceUrl: '',
+      orderNoList: [],
+      orderTimeHover: false,
+      form: {
+        username: '',
+        nickName: '',
+        email: '',
+        sex: 0
+      }
+    },
+    mounted() {
+      this.init()
+    },
+    methods: {
+      // 获取初始信息
+      init() {
+        axios.post(this.serviceUrl + '/user/getBaseInfo').then(
+            response => {
+              let result = response.data;
+              let respMap = result.respMap;
+              console.log(respMap)
+              this.shoppingCartCount = respMap.shoppingCartCount;
+              this.nickName = respMap.nickName;
+              this.form.nickName = respMap.nickName;
+              this.form.username = respMap.username;
+              this.form.email = respMap.email;
+              this.form.sex = respMap.sex;
+            }
+        );
+      },
+      userUpdate() {
+        const nickName = this.form.nickName;
+        const email = this.form.email;
+        const sex = this.form.sex;
+        const params = new URLSearchParams({
+          nickName, email, sex
+        });
+        axios.put('/user/update', params).then(
+            res => {
+              let data = res.data;
+              if (data.code != 0) {
+                this.$message.success(data.msg)
+                return;
+              }
+              this.$message.success("修改成功");
+            });
+      }
+    }
+  })
+</script>
+</body>
+</html>
+<script type="text/javascript">
+  $(function () {
+
+    $(".content-left-address").click(function () {
+      window.location.href = "/user/address";
+    })
+    $(".content-left-order").click(function () {
+      window.location.href = "/user/toPersonalOrder";
+    })
+    $(".header-main-center-height-cart").click(function () {
+      window.location.href = "/shoppingCart";
+    })
+    $(".header-main-left").click(function () {
+      window.location.href = "/user/toIndex";
+    })
+  })
+</script>

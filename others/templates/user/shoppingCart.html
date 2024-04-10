@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>购物车</title>
+  <style type="text/css">
+
+  </style>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../css/user/shoppingCart.css"/>
+  <!-- 引入组件库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.6/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+
+<body>
+<div id="app">
+
+  <div class="header">
+    <div class="container">
+      <div class="header-nav-left">
+        <ul>
+          <li class="header-nav-left-area">中国大陆</li>
+          <li class="header-nav-left-login"><a href="/user/login">您好,{{nickName}}</a></li>
+          <li class="header-nav-left-register"><a href="/user/register">免费注册</a></li>
+        </ul>
+      </div>
+      <div class="header-nav-right">
+        <ul>
+          <li><a href="#">关于我们</a></li>
+          <li><a href="#">购物指南</a></li>
+          <li><a href="#">会员中心</a></li>
+          <li><a href="/shoppingCart">购物车</a></li>
+          <li><a href="/user/toPersonalOrder">我的订单</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="title">
+    <div class="container">
+      <div class="title-left">
+
+        <span>购物车</span>
+      </div>
+      <div class="title-right">
+        <input type="text">
+        <button><img src="../img/iconImg/search.png" width="100%" height="100%"></button>
+      </div>
+    </div>
+  </div>
+  <!-- 购物车主体 -->
+  <div id="cart-body">
+    <div class="w" v-if="items.length!=0">
+      <div class="cart-filter-bar">
+        <ul class="switch-cart">
+          <li class="switch-cart-item"><a href="#none"><em>全部商品</em><span class="number">{{goodsItemCount}}</span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="clr"></div>
+      <div class="cart-thead">
+        <div class="column t-checkbox">
+          <div class="cart-checkbox">
+            <el-checkbox :value='totalChecked' @change="allChangeChecked()" :false-label=0 :true-label=1>全选
+            </el-checkbox>
+          </div>
+        </div>
+        <div class="column t-goods">商品</div>
+        <div class="column t-props">&nbsp;</div>
+        <div class="column t-price">单价</div>
+        <div class="column t-quantity">数量</div>
+        <div class="column t-sum">小计</div>
+        <div class="column t-action">操作</div>
+      </div>
+      <div class="cart-tbody">
+        <!-- 商家列表 -->
+        <div v-for="(shopItem,index) in items">
+          <div class="shop">
+            <div class="cart-checkbox">
+              <!-- 商铺的全选按钮 -->
+              <el-checkbox v-model=shopItem.isChecked @change="shopChangeChecked(index)" :false-label=0
+                           :true-label=1></el-checkbox>
+            </div>
+            <span class=""><span class="shop-coupon"></span></span><span class="shop-txt">
+									<a href="//mall.jd.com/index-34239.html" class="shop-name" target="_blank" rel="noreferrer"
+                     data-vendorid="35967"
+                     clstag="pageclick|keycount|Shopcart_Shopid|35967">
+										<i class="vendor-icon undefined" title=""></i>{{shopItem.storeName}}</a><i
+                  class="ml5 btn-im"></i></span>
+          </div>
+          <div class="item-list" v-for="(goodsItem,index2) in shopItem.cartItemList">
+            <div class="item-item " id="26291767612" data-sku="26291767612" data-ts="1592389852095"
+                 data-skuuuid="114076208830147771340181504">
+              <div class="item-form">
+                <div class="cell p-checkbox">
+                  <div class="cart-checkbox">
+                    <el-checkbox v-model=goodsItem.isChecked :false-label=0 :true-label=1
+                                 @change="itemChangeChecked(goodsItem.cartId,goodsItem.isChecked)"></el-checkbox>
+                    <span class="line-circle"></span>
+                  </div>
+                </div>
+                <div class="cell p-goods">
+                  <div class="goods-item">
+                    <div class="p-img ">
+                      <a :href="serviceUrl + '/user/toShopDetail?id=' + goodsItem.goodsId" target="_blank"
+                         rel="noreferrer"
+                         :title=goodsItem.description>
+                        <img class="goods-cover" :src=goodsItem.goodsUrl :alt=goodsItem.description></a></div>
+                    <div class="p-msg">
+                      <div class="p-name">
+                        <a :href="serviceUrl + '/user/toShopDetail?id=' + goodsItem.goodsId" target="_blank"
+                           rel="noreferrer"
+                           :title=goodsItem.description
+                           clstag="pageclick|keycount|Shopcart_Productid|26291767612_1">{{goodsItem.description}}</a>
+                      </div>
+                      <div class="p-extend p-extend-new"><span class=""><span class="promise ftx-03 jd-service"></span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="cell p-props">
+                  <div class="props-txt"><span class=""></span></div>
+                  <div class="props-txt"><span class=""></span></div>
+                </div>
+                <div class="cell p-price"><span class="p-price-cont">￥{{goodsItem.price | numFilter}}</span>
+                  <p class="mt5"><span class=""></span></p>
+                  <p class="mt5"></p>
+                </div>
+                <div class="cell p-quantity">
+                  <el-input-number size="mini" v-model=goodsItem.count :min="1" :max="99"
+                                   @change="changeGoodsCount(goodsItem.cartId,goodsItem.count,index,index2)">
+
+                  </el-input-number>
+                  <!-- <p class="ac ftx03">有货</p> -->
+                </div>
+                <div class="cell p-sum"><strong>¥{{goodsItem.price * goodsItem.count | numFilter}}</strong></div>
+                <div class="cell p-ops">
+                  <span class="p-ops-item" @click="deleteCartById(goodsItem.cartId)">删除</span>
+                </div>
+              </div>
+              <div class="product-extra mb10"></div>
+              <div class="item-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>
+          <div style="padding-bottom: 0px;"></div>
+          <div class="cart-floatbar " style="bottom: 0px; position: static; transform: none;">
+            <div class="cart-floatbar">
+              <div class="cart-toolbar">
+                <div class="toolbar-wrap"><input type="hidden" id="checkedCartState" value="4">
+                  <div class="selected-item-list hide" style="display: none;"></div>
+                  <div class="options-box">
+                    <div class="left">
+<!--                      <div class="select-all"><input type="checkbox" class="jdcheckbox"-->
+<!--                                                     clstag="pageclick|keycount|Shopcart_CheckAll|0">全选-->
+<!--                      </div>-->
+                      <!--                      <div class="operation"><a href="#none" class="opt-batch-remove">删除选中的商品</a><a href="#none"-->
+                      <!--                                                                                                    class="opt-cleaner"-->
+                      <!--                                                                                                    title="亲，点我可快速清理购物车商品哦！"><strong-->
+                      <!--                              id="J_opt_cart_cleaner">清理购物车</strong></a></div>-->
+                    </div>
+                    <div class="right">
+                      <div class="combine">
+                        <div class="btn-area" @click="doPayFromCart"><a class="common-submit-btn">去结算<b></b></a></div>
+                        <div class="price-sum">
+                          <div>
+                            <div class="price-show"><span class="txt">总价：</span><span class="price priceShow"><em>￥{{totalMoney.toFixed(2)}}</em></span><b
+                                    class="ml5 price-tips"></b>
+                              <div class="price-tipsbox-new">
+                                <div class="ui-tips-main">不含运费及送装服务费</div>
+                                <span class="price-tipsbox-arrow"></span>
+                              </div>
+                            </div>
+                            <span class="amount-sum">已选择<em>{{totalCount}}</em>件商品</span><br>
+                            <div class="price-sum-extra"></div>
+                          </div>
+                        </div>
+                        <div class="clr"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clr"></div>
+    </div>
+    <div class="cart-empty" v-else style="padding-top: 200px">
+      <div class="message">
+        <ul>
+          <li class="txt">购物车空空的哦~，去看看心仪的商品吧~</li>
+          <li><a href="http://127.0.0.1:6888/" class="ftx-05">去购物&gt;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</body>
+</html>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      nickName: '',
+      // serviceUrl: 'http://127.0.0.1:8080',
+      serviceUrl: '',
+      items: [],
+      num4: 1,
+      checked: 0,
+    },
+    mounted() {
+      this.getShopCartData();
+      this.init();
+    },
+    methods: {
+      init() {
+        axios.post(this.serviceUrl + '/user/getBaseInfo').then(
+            response => {
+              let result = response.data;
+              let respMap = result.respMap;
+              this.shoppingCartCount = respMap.shoppingCartCount;
+              this.nickName = respMap.nickName;
+              console.log("购物车中含有：" + this.shoppingCartCount)
+
+            }
+        );
+      },
+      // 获取购物车中信息
+      getShopCartData() {
+        const params = new URLSearchParams();
+        axios.post(this.serviceUrl + '/getShopCartData', params).then(
+            response => {
+              this.items = response.data.data;
+            });
+      },
+      // 修改购物车中商品的数量
+      changeGoodsCount(cartId, count, index1, index2) {
+
+        let inventory = this.items[index1].cartItemList[index2].inventory;
+        if (inventory <= count) {
+          this.$message.error('当前商品库存为：' + inventory + ',购买数量不能再增加');
+          this.items[index1].cartItemList[index2].count = inventory;
+          return;
+        }
+
+        const params = new URLSearchParams();
+        params.append("cartId", cartId);
+        params.append("count", count)
+        axios.post(this.serviceUrl + '/changeGoodsCount', params).then(
+            response => {
+            });
+      },
+      // 商家的勾选状态
+
+      // 删除购物车中的商品
+      deleteCartById(cartId) {
+
+        this.$confirm('确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 确定
+          for (let i in this.items) {
+            for (let j in this.items[i].cartItemList) {
+              if (this.items[i].cartItemList[j].cartId == cartId) {
+                this.items[i].cartItemList.splice(j, 1);
+                console.log(this.items[i].cartItemList);
+
+                // 如果该商品为购物车中商家的最后一件 则删除商家信息
+                if (this.items[i].cartItemList.length == 0) {
+                  this.items.splice(i, 1)
+                }
+                break;
+              }
+            }
+          }
+          const params = new URLSearchParams();
+          params.append("cartId", cartId);
+          axios.post(this.serviceUrl + '/deleteCartById', params).then(
+              response => {
+              });
+        }).catch(() => {
+          // 取消
+          return;
+        });
+
+      },
+      // 所有商品的勾选框的改变事件
+      itemChangeChecked(cartId, isChecked) {
+        const params = new URLSearchParams();
+        params.append("cartId", cartId);
+        params.append("isChecked", isChecked)
+        axios.post(this.serviceUrl + '/changeGoodsChecked', params).then(
+            response => {
+            });
+      },
+      // 商铺的全选按钮
+      shopChangeChecked(index) {
+        console.log(this.items[index].isChecked)
+        for (let goodsItem of this.items[index].cartItemList) {
+          goodsItem.isChecked = this.items[index].isChecked;
+        }
+      },
+      // 全选框点击
+      allChangeChecked() {
+        console.log("全选框的数据" + this.totalChecked)
+        let totalChecked = !this.totalChecked;
+        for (let item of this.items) {
+          item.isChecked = totalChecked;
+          for (let i of item.cartItemList) {
+            i.isChecked = totalChecked;
+          }
+        }
+      },
+
+      // 结算!!!
+      doPayFromCart() {
+        // 获取被选中的购物车ID
+        let cartIdList = new Array();
+
+        for (let item of this.items) {
+          for (let i of item.cartItemList) {
+            if (i.isChecked == 1) {
+              cartIdList.push(i.cartId);
+            }
+          }
+        }
+        if (cartIdList.length < 1) {
+          this.$message.error('请至少选中一件商品');
+          return;
+        }
+        console.log(cartIdList);
+        cartIdList = JSON.stringify(cartIdList);
+        console.log(cartIdList)
+        const params = new URLSearchParams();
+        params.append('cartIdList', cartIdList)
+        axios.post(this.serviceUrl + '/doPayFromCart', params).then(
+            response => {
+              console.log(response.data.msg);
+              uid = response.data.msg;
+              window.location.href = 'http://127.0.0.1:6888/user/toPayByCart?uid=' + uid;
+
+              // http://127.0.0.1:8080/user/toPayByCart
+
+            });
+
+      }
+    },
+    computed: {
+      // 计算购物车勾选商品的总金额
+      totalMoney() {
+        console.log("执行了")
+        totalMoney = 0.00;
+        for (let item of this.items) {
+          for (let i of item.cartItemList) {
+            if (i.isChecked == 1) {
+              totalMoney += i.price * i.count;
+            }
+          }
+        }
+        return totalMoney;
+      },
+      // 计算购物车勾选商品的总金额
+      totalCount() {
+        totalCount = 0;
+        for (let item of this.items) {
+          for (let i of item.cartItemList) {
+            if (i.isChecked == 1) {
+              totalCount += i.count;
+            }
+          }
+        }
+        return totalCount;
+      },
+      // 全选框数据
+      totalChecked() {
+
+        let totalChecked = 1;
+        for (let item of this.items) {
+          // 对店铺的勾选框也进行修改
+          let flag = true;
+          for (let i of item.cartItemList) {
+            if (i.isChecked == 0) {
+              totalChecked = 0;
+              flag = false;
+              item.isChecked = 0;
+              break;
+            }
+          }
+          if (flag) {
+            item.isChecked = 1;
+          }
+        }
+        return totalChecked;
+      },
+      // 商品条数
+      goodsItemCount() {
+        let goodsItemCount = 0;
+        for (let item of this.items) {
+          for (let i of item.cartItemList) {
+            goodsItemCount++;
+          }
+        }
+        return goodsItemCount;
+      }
+
+    },
+    filters: {
+      numFilter(value) {
+        let realVal = ''
+        if (!isNaN(value) && value !== '') {
+          // 截取当前数据到小数点后两位
+          realVal = parseFloat(value).toFixed(2)
+        } else {
+          realVal = '--'
+        }
+        return realVal
+      }
+    }
+  })
+</script>

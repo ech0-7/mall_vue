@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商家登陆</title>
+    <link rel="icon" href="../img/icon.png" type="image/png">
+
+    <style type="text/css">
+        body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            min-width: 960px;
+            background: #F4F4F4;
+        }
+        .container{
+            margin: 0 10%;
+        }
+        .title{
+            height: 90px;
+            background:white;
+        }
+        .title-left{
+            float: left;
+            cursor: pointer;
+            padding-top: 20px;
+        }
+        .title-left img{
+            width: 134px;
+            height: 42px;
+        }
+        .title-left span{
+            margin-left: 10px;
+            font-family: "黑体";
+            font-size: 20px;
+        }
+        .content{
+            height: 500px;
+            background: url("../img/indexImg/商家登录.png") 50% no-repeat;
+            background-size: cover;
+        }
+        .content-login{
+            position: relative;
+            width: 320px;
+            height: 360px;
+            background: white;
+            top: 80px;
+            left: 740px;
+        }
+        .content-login-header{
+            height: 70px;
+            background: white;
+        }
+        .content-message-header{
+            height: 70px;
+            background: white;
+        }
+        .content-login-header span{
+            display: inline-block;
+            width: 36%;
+            height: 30px;
+            padding: 0px 10px;
+            text-align: center;
+            margin: 25px 10px 0px 10px;
+            /* border-bottom: 1px solid gray; */
+            font-family: "黑体";
+            cursor: pointer;
+
+        }
+        .content-message-header span{
+            display: inline-block;
+            width: 36%;
+            height: 30px;
+            padding: 0px 10px;
+            text-align: center;
+            margin: 25px 10px 0px 10px;
+            /* border-bottom: 1px solid gray; */
+            font-family: "黑体";
+            cursor: pointer;
+
+        }
+        .content-login-header-password{
+            border-bottom: 2px solid #E4393C;
+            color:#E4393C;
+            font-weight: bold;
+        }
+        .content-message-header-message{
+            border-bottom: 2px solid #E4393C;
+            color:#E4393C;
+            font-weight: bold;
+        }
+        .content-login-error{
+            height: 25px;
+            background: white;
+            margin: 0 18px;
+            font-size: 12px;
+            color:#E4393C;
+            line-height: 25px;
+
+        }
+        .content-message-error{
+            height: 25px;
+            background: white;
+            margin: 0 18px;
+            font-size: 12px;
+            color:#E4393C;
+            line-height: 25px;
+        }
+        .content-login-content span{
+            display: inline-block;
+            background: #E8E8E8;
+            width: 35px;
+            height: 35px;
+        }
+        .content-message-content span{
+            display: inline-block;
+            background: #E8E8E8;
+            width: 35px;
+            height: 35px;
+        }
+
+        .content-login-content span img{
+            width:25px;
+            height: 25px;
+            padding-left: 5px;
+            padding-top: 5px;
+        }
+        .content-message-content span img{
+            width:25px;
+            height: 25px;
+            padding-left: 5px;
+            padding-top: 5px;
+        }
+        .content-login-content-text{
+            border: 1px solid black;
+            height: 35px;
+            margin: 5px 18px 18px 18px;
+        }
+        .content-message-content-text{
+            border: 1px solid black;
+            height: 35px;
+            margin: 5px 18px 18px 18px;
+        }
+        .content-login-content-text input{
+            position: relative;
+            top: -8px;
+            left: 8px;
+            height: 30px;
+            width:220px;
+            border: none;
+            outline: none;
+
+        }
+        .content-message-content-text input{
+            position: relative;
+            top: -8px;
+            left: 8px;
+            height: 30px;
+            width:220px;
+            border: none;
+            outline: none;
+
+        }
+        .content-login-content-password{
+            border: 1px solid black;
+            height: 35px;
+            margin: 18px;
+        }
+        .content-message-content-password{
+            border: 1px solid black;
+            height: 35px;
+            margin: 18px;
+        }
+        .content-login-content-password input{
+            position: relative;
+            top: -8px;
+            left: 8px;
+            height: 30px;
+            width:220px;
+            border: none;
+            outline: none;
+        }
+        .content-message-content-password input{
+            position: relative;
+            top: -8px;
+            left: 8px;
+            height: 30px;
+            width:100px;
+            border:none;
+            outline: none;
+
+        }
+        .content-message-content-password button{
+            position: relative;
+            top: -7px;
+            left: 31px;
+            height: 35px;
+            width: 100px;
+            font-size: 12px;
+            color: grey;
+            background: white;
+            text-align: right;
+            cursor: pointer;
+            border: none;
+            outline: none;
+
+        }
+        .content-login-content-forget{
+            margin: 0 18px;
+            text-align: right;
+        }
+        .content-login-content-forget a{
+            font-size: 12px;
+            text-decoration: none;
+            color: gray;
+        }
+        .content-login-content-forget .content-login-content-forget-register{
+            color:#E4393C;
+        }
+        .content-login-content-submit{
+            height: 35px;
+            margin: 18px;
+        }
+        .content-message-content-submit{
+            height: 35px;
+            margin: 18px;
+        }
+        .content-login-content-submit button{
+            width: 100%;
+            height: 100%;
+            background: #E4393C;
+            outline: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .content-message-content-submit button{
+            width: 100%;
+            height: 100%;
+            background: #E4393C;
+            outline: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .content-login-content-submit button:hover{
+            background: #FF4400;
+        }
+        .content-message-content-submit button:hover{
+            background: #FF4400;
+        }
+        .content-login-footer{
+            /* 				border: 1px solid black; */
+            margin: 25px 18px 18px 50px;
+        }
+        .content-login-footer img{
+            width: 25px;
+            height: 25px;
+            margin: 0 20px;
+            cursor: pointer;
+        }
+        .footer{
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<div class = "title">
+    <div class = "container">
+        <div class = "title-left">
+<!--            <img src="../img/shoppingcartImg/01.png" width="100%" height="100%">-->
+            <span>商家登录</span>
+        </div>
+    </div>
+</div>
+<div class = "content">
+    <div class = "container">
+        <div class = "content-login">
+            <div class = "content-login-password">
+                <div class = "content-login-header">
+                    <span class = "content-login-header-password">密码登录</span>
+                    <span class = "content-login-header-message">短信登录</span>
+                </div>
+                <div class = "content-login-error">
+                    <!--       请输入用户名或密码          -->
+                </div>
+                <div class = "content-login-content">
+                    <div class = "content-login-content-text">
+                        <span><img src="../img/iconImg/用户名(grey).png" width="100%" height="100%"></span>
+                        <input type="text" name="uname" id="uname" value=""  placeholder="用户名/登录手机"/>
+                    </div>
+                    <div class = "content-login-content-password">
+                        <span><img src="../img/iconImg/密码(grey).png" width="100%" height="100%"></span>
+                        <input type="password" name="password" id="password" value="" placeholder="密码" />
+                    </div>
+                    <div class = "content-login-content-submit">
+                        <button>登 录</button>
+                    </div>
+                    <div class = "content-login-content-forget">
+                        <a href="#" class = "content-login-content-forget-password">忘记密码</a>
+                        <a href="/user/register" class = "content-login-content-forget-register">立即注册</a>
+                    </div>
+                </div>
+                <div class = "content-login-footer">
+                    <img src="../img/iconImg/QQ.png" width="100%" height="100%" alt="QQ" title="QQ">
+                    <img src="../img/iconImg/微信.png" width="100%" height="100%" alt="微信" title="微信">
+                    <img src="../img/iconImg/微博.png" width="100%" height="100%" alt="微博" title="微博">
+                </div>
+            </div>
+            <div class = "content-login-message" style="display: none;">
+                <div class = "content-message-header">
+                    <span class = "content-message-header-password">密码登录</span>
+                    <span class = "content-message-header-message">短信登录</span>
+                </div>
+                <div class = "content-message-error">
+                    <!--                    请输入短信验证码-->
+                </div>
+                <div class = "content-message-content">
+                    <div class = "content-message-content-text">
+                        <span><img src="../img/iconImg/手机(grey).png" width="100%" height="100%"></span>
+                        <input type="text" name="" id="phone" value=""  placeholder="请输入手机号"/>
+                    </div>
+                    <div class = "content-message-content-password">
+                        <span><img src="../img/iconImg/验证码(grey).png" width="100%" height="100%"></span>
+                        <input type="text" name="" id="btn-code" value="" placeholder="请输入验证码" />
+                        <button>获取验证码</button>
+                    </div>
+                    <div class = "content-message-content-submit">
+                        <button>登 录</button>
+                    </div>
+                    <div class = "content-login-content-forget">
+                        <a href="/user/register" class = "content-login-content-forget-register">立即注册</a>
+                    </div>
+                </div>
+                <div class = "content-login-footer">
+                    <img src="../img/iconImg/QQ.png" width="100%" height="100%" alt="QQ" title="QQ">
+                    <img src="../img/iconImg/微信.png" width="100%" height="100%" alt="微信" title="微信">
+                    <img src="../img/iconImg/微博.png" width="100%" height="100%" alt="微博" title="微博">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class = "footer">
+
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../js/lib/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="../js/lib/layer.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var message = false;
+        var submitflag = false;
+        var num = 60;
+        $(".content-login-header-message").click(function(){
+            $(".content-login-message").css({'display':"block"});
+            $(".content-login-password").css({"display":"none"});
+        })
+        $(".content-message-header-password").click(function(){
+            $(".content-login-message").css({'display':"none"});
+            $(".content-login-password").css({"display":"block"});
+        })
+        $("#phone").blur(function(){
+            var val = $("#phone").val();
+            if(val.length != 11 && val.length > 1){
+                $(".content-message-error").text("请输入有效的手机号码");
+                $(".content-message-error").css({"background":"#FFEBEB"});
+            }else if(val.length == 11){
+                $(".content-message-error").text("");
+                $(".content-message-error").css({"background":"white"});
+                submitflag = true;
+            }
+        })
+        $(".content-login-content-submit button").click(function(){
+            var uname = $("#uname").val();
+            var password = $("#password").val();
+            $.ajax({
+                type:'post',
+                url: "/store/LoginByPass",
+                data:{"uname":uname,"password":password},
+                success:function(data){
+                    if( data != "登陆成功"){
+                        $(".content-login-error").text(data);
+                        $(".content-login-error").css({"background":"#FFEBEB"});
+                    }else{
+                        $(".content-login-error").text(data);
+                        $(".content-login-error").css({"background":"white"});
+                        window.location.href = "/store/toIndex";
+                    }
+                }
+            })
+
+        })
+        $(".content-message-content-submit button").click(function(){
+            var phone = $("#phone").val();
+            var code = $("#btn-code").val();
+            if(submitflag){
+                if(code != ""){
+                    $.ajax({
+                        type:'post',
+                        url: "/store/Login",
+                        data:{"phone":phone,"code":code},
+                        success:function(data){
+                            if(data != "登陆成功"){
+                                $(".content-message-error").text(data);
+                                $(".content-message-error").css({"background":"#FFEBEB"});
+                            }else {
+                                window.location.href = "/store/toIndex";
+                            }
+                        }
+                    })
+                }else{
+                    $(".content-message-error").text("请输入验证码");
+                    $(".content-message-error").css({"background":"#FFEBEB"});
+                }
+            }else{
+                $(".content-message-error").text("请输入有效的手机号码");
+                $(".content-message-error").css({"background":"#FFEBEB"});
+            }
+
+
+        })
+        $(".content-message-content-password button").click(function(){
+            var phone = $("#phone").val();
+            if (!(/^1[3456789]\d{9}$/.test(phone))) {
+                alert("手机号码有误，请重填");
+                return false;
+            }else{
+                if(num == 60){
+                    // 发送短信验证码
+                    $.ajax({
+                        url: "/user/sendSms",
+                        data: {
+                            phone: phone
+                        },
+                        success: function (data) {
+                        }
+                    })
+                    message = true;
+                }
+
+            }
+        })
+
+        window.setInterval(function(){
+            if(message && num >=0){
+                $(".content-message-content-password button").text(num+"秒后重新发送");
+                num--;
+            }
+            if(num == -1){
+                message = false;
+                num=60;
+                $(".content-message-content-password button").text("重新发送");
+            }
+        },1000);
+
+        $(".title-left").click(function(){
+            window.location.href = "/user/toIndex";
+        })
+
+    })
+</script>

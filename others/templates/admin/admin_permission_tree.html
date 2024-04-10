@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
+<head>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <style>
+        #test1{
+            padding: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div id="test1"></div>
+
+<script>
+    var global_id;
+    $.ajax({
+        url: '/admin/permission/getTreeData',
+        type: 'post',
+        dataType: "json",
+        success: function (data) {
+            layui.use('tree', function () {
+                var tree = layui.tree;
+                //渲染
+
+                var inst1 = tree.render({
+                    elem: '#test1'  //绑定元素
+                    , data: data
+                    , limitNodeAddLevel: 3  // 限制添加节点rank 不显示“+”图标
+                    , limitNodeDelLevel: 1  // 限制显示“删除”的层级
+                    , accordion: true
+                    // , showCheckbox: true  //是否显示复选框
+                    , edit: ['add', 'update', 'del'] //操作节点的图标
+                    , click: function (obj) {
+                        var data = obj.data;  //获取当前点击的节点数据
+                        global_id = data.id;
+                        // layer.msg('状态：' + obj.state + '<br>节点数据：' + JSON.stringify(data));
+                        // layer.msg(JSON.stringify(data.children));
+                    }
+                    , operate: function (obj) {
+                        var type = obj.type; //得到操作类型：add、edit、del
+                        var data = obj.data; //得到当前节点的数据
+                        var elem = obj.elem; //得到当前节点元素
+                        var children = obj.children // 得到当前结点的子元素
+
+
+                        //Ajax 操作
+                        var id = data.id; //得到节点索引
+                        if (type === 'add') { //增加节点
+
+                            // 将String类型的ID 转换成数字类型
+                            id = parseInt(id);
+                            if (id > 30000) {
+                                layer.msg("当前仅支持三级目录,无法再添加");
+                                return;
+                            }
+
+
+                            // 获得父节点的ID
+                            // alert(id);
+                            var thisId = 123;
+                            $.ajax({
+                                url: "/admin/class/insert",
+                                data: {
+                                    parentId: id
+                                },
+                                async: false,
+                                dataType: "json",
+                                method: "post",
+                                success: function (data) {
+                                    thisId = data.classId;
+                                }
+                            })
+
+                            return thisId;
+                        } else if (type === 'update') { //修改节点
+                            // alert(id);
+                            var className = elem.find('.layui-tree-txt').html();  //得到修改后的内容
+                            $.ajax({
+                                url: "/admin/class/update",
+                                data: {
+                                    className: className,
+                                    classId: id
+                                },
+                                dataType: "json",
+                                success(data) {
+                                    if (data.status == 0) {
+                                        layer.msg("修改成功")
+                                    } else {
+                                        layer.msg("修改失败")
+                                    }
+                                }
+                            })
+
+                        } else if (type === 'del') { //删除节点
+
+                            deletePermission(id);
+                        }
+
+                    }
+                });
+            });
+        }
+    });
+
+    //Ajax执行删除
+    function deletePermission(id) {
+        $.ajax({
+            url: '/admin/class/deleteClass',
+            type: 'get',
+            data: {classId: id},
+            dataType: "json",
+            success: function (data) {
+                if (data.status == "0") {
+                    layer.msg("删除成功");
+                } else {
+                    layer.alert("删除失败！");
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
+</body>
+</html>

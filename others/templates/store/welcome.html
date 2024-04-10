@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+        content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
+  <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+  <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+  <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+  <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+  <!-- 引入组件库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.5.6/vue.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+
+  <script th:inline="javascript" type="text/javascript">
+    var ctxPath = [[${#httpServletRequest.getContextPath()}]];
+    var StoreLogin = [[${session.StoreLogin}]];
+    var goodsList = [[${goodsList}]];
+    var goodsShelfList = [[${goodsShelfList}]];
+  </script>
+</head>
+
+<body>
+<div id="app">
+
+  <div class="x-body layui-anim layui-anim-up">
+
+    <fieldset class="layui-elem-field">
+      <legend>数据统计</legend>
+      <div class="layui-field-box">
+        <div class="layui-col-md12">
+          <div class="layui-card">
+            <div class="layui-card-body">
+              <div class="layui-carousel x-admin-carousel x-admin-backlog" lay-anim="" lay-indicator="inside"
+                   lay-arrow="none" style="width: 100%; height: 90px;">
+                <div carousel-item="">
+                  <ul class="layui-row layui-col-space10 layui-this">
+                    <li class="layui-col-xs3">
+                      <a href="javascript:;" class="x-admin-backlog-body">
+                        <h3>已发布商品</h3>
+                        <p>
+                          <cite>{{goodsCount}}</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a href="javascript:;" class="x-admin-backlog-body">
+                        <h3>已支付订单</h3>
+                        <p>
+                          <cite>{{payOrderCount}}</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a href="javascript:;" class="x-admin-backlog-body">
+                        <h3>交易量</h3>
+                        <p>
+                          <cite>{{noPayOrderCount}}</cite></p>
+                      </a>
+                    </li>
+                    <li class="layui-col-xs3">
+                      <a href="javascript:;" class="x-admin-backlog-body">
+                        <h3>总交易额</h3>
+                        <p>
+                          <cite>{{totalTurnover}}</cite></p>
+                      </a>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="layui-elem-field">
+      <legend>图表展示</legend>
+      <div class="layui-field-box">
+        <div id="orderNum" style="width: 600px;height:350px; float: left"></div>
+        <div id="priceNum" style="width: 600px;height:350px; float: left"></div>
+      </div>
+    </fieldset>
+
+  </div>
+
+
+</div>
+</body>
+</html>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data:{
+      goodsCount:0,
+      payOrderCount:0,
+      noPayOrderCount:0,
+      totalTurnover:0,
+    },
+    created() {
+      axios.post("/store/initData").then(
+          response => {
+            let map = response.data.respMap;
+            this.goodsCount = map.goodsCount;
+            this.payOrderCount = map.payOrderCount;
+            this.noPayOrderCount = map.noPayOrderCount;
+            this.totalTurnover = map.totalTurnover;
+
+          }
+      )
+    }
+  })
+</script>
+
+<script>
+  $.ajax({
+    url: "/admin/chart/getLineData",
+    method: "post",
+    success: function (data) {
+      dateList = data.key;
+      valueList = data.value;
+      pricedateList = data.pricekey;
+      pricevalueList = data.pricevalue;
+      showorder();
+      showprice();
+    }
+  })
+
+  function showorder() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('orderNum'));
+    option = {
+
+      // Make gradient line here
+      visualMap: {
+        show: false,
+        type: 'continuous',
+        seriesIndex: 0,
+        min: 0,
+        max: 400
+      },
+      title: {
+        left: 'center',
+        text: '七日订单趋势图'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      xAxis: {
+        data: dateList
+      },
+      yAxis: {
+        splitLine: {show: false}
+      },
+      grid: [{
+        bottom: '10%'
+      }, {
+        top: '10%'
+      }],
+      series: {
+        type: 'line',
+        showSymbol: false,
+        data: valueList
+      }
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
+
+  function showprice() {
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('priceNum'));
+    option = {
+
+      // Make gradient line here
+      visualMap: {
+        show: false,
+        type: 'continuous',
+        seriesIndex: 0,
+        min: 0,
+        max: 400
+      },
+      title: {
+        left: 'center',
+        text: '七日交易金额趋势图'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      xAxis: {
+        data: pricedateList
+      },
+      yAxis: {
+        splitLine: {show: false}
+      },
+      grid: [{
+        bottom: '10%'
+      }, {
+        top: '10%'
+      }],
+      series: {
+        type: 'line',
+        showSymbol: false,
+        data: pricevalueList
+      }
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
+</script>

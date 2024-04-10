@@ -1,0 +1,27 @@
+footer{
+    margin-bottom: 10px;
+}
+footer p{
+    width: 1200px;
+    height: 36px;
+    margin: 0 auto;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    box-sizing: border-box;
+    padding-left: 20px;
+}
+
+footer p a{
+    width: 80px;
+    display: inline-block;
+    border-right: 1px solid black;
+    text-align: center;
+}
+footer p a:last-of-type{
+    border-right: none;
+}
+footer p em{
+    margin-left: 200px;
+    color: #9c9c9c;
+    line-height: 36px;
+}
