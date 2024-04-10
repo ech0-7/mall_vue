@@ -21,6 +21,29 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   {path: '/login', component: () => import('@/views/login/index'), hidden: true},
   {path: '/404', component: () => import('@/views/404'), hidden: true},
+  {
+    path: '',
+    component: Layout,
+    redirect: '/home',
+    meta: {title: '首页', icon: 'home'},
+    children: [{
+      path: 'home',
+      name: 'home',
+      component: () => import('@/views/home/index'),
+      meta: {title: '仪表盘', icon: 'dashboard'}
+    },
+    {
+      name: 'document',
+      path: 'https://www.macrozheng.com',
+      meta: {title: '学习教程', icon: 'document'}
+    },
+    {
+      name: 'video',
+      path: 'https://www.macrozheng.com/mall/catalog/mall_video.html',
+      meta: {title: '视频教程', icon: 'video'}
+    },
+    ]
+  }
 ]
 
 export const asyncRouterMap = [
@@ -29,91 +52,91 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/pms/product',
     name: 'pms',
-    meta: {title: 'product', icon: 'product'},
+    meta: {title: '商品', icon: 'product'},
     children: [{
       path: 'product',
       name: 'product',
       component: () => import('@/views/pms/product/index'),
-      meta: {title: 'product-list', icon: 'product-list'}
+      meta: {title: '商品列表', icon: 'product-list'}
     },
       {
         path: 'addProduct',
         name: 'addProduct',
         component: () => import('@/views/pms/product/add'),
-        meta: {title: 'AddProduct', icon: 'product-add'}
+        meta: {title: '添加商品', icon: 'product-add'}
       },
       {
         path: 'updateProduct',
         name: 'updateProduct',
         component: () => import('@/views/pms/product/update'),
-        meta: {title: 'UpdateProduct', icon: 'product-add'},
+        meta: {title: '修改商品', icon: 'product-add'},
         hidden: true
       },
       {
         path: 'productCate',
         name: 'productCate',
         component: () => import('@/views/pms/productCate/index'),
-        meta: {title: 'ProductCate', icon: 'product-cate'}
+        meta: {title: '商品分类', icon: 'product-cate'}
       },
       {
         path: 'addProductCate',
         name: 'addProductCate',
         component: () => import('@/views/pms/productCate/add'),
-        meta: {title: 'addProductCate'},
+        meta: {title: '添加商品分类'},
         hidden: true
       },
       {
         path: 'updateProductCate',
         name: 'updateProductCate',
         component: () => import('@/views/pms/productCate/update'),
-        meta: {title: 'updateProductCate'},
+        meta: {title: '修改商品分类'},
         hidden: true
       },
       {
         path: 'productAttr',
         name: 'productAttr',
         component: () => import('@/views/pms/productAttr/index'),
-        meta: {title: 'productAttr', icon: 'product-attr'}
+        meta: {title: '商品类型', icon: 'product-attr'}
       },
       {
         path: 'productAttrList',
         name: 'productAttrList',
         component: () => import('@/views/pms/productAttr/productAttrList'),
-        meta: {title: 'productAttrList'},
+        meta: {title: '商品属性列表'},
         hidden: true
       },
       {
         path: 'addProductAttr',
         name: 'addProductAttr',
         component: () => import('@/views/pms/productAttr/addProductAttr'),
-        meta: {title: 'addProductAttr'},
+        meta: {title: '添加商品属性'},
         hidden: true
       },
       {
         path: 'updateProductAttr',
         name: 'updateProductAttr',
         component: () => import('@/views/pms/productAttr/updateProductAttr'),
-        meta: {title: 'updateProductAttr'},
+        meta: {title: '修改商品属性'},
         hidden: true
       },
       {
         path: 'brand',
         name: 'brand',
         component: () => import('@/views/pms/brand/index'),
-        meta: {title: 'brand', icon: 'product-brand'}
+        meta: {title: '品牌管理', icon: 'product-brand'}
       },
       {
         path: 'addBrand',
         name: 'addBrand',
         component: () => import('@/views/pms/brand/add'),
-        meta: {title: 'addBrand'},
+        meta: {title: '添加品牌'},
         hidden: true
       },
       {
         path: 'updateBrand',
         name: 'updateBrand',
         component: () => import('@/views/pms/brand/update'),
-        meta: {title: 'updateBrand'},
+        meta: {title: '编辑品牌'},
         hidden: true
       }
     ]
@@ -355,4 +378,3 @@ export default new Router({
   scrollBehavior: () => ({y: 0}),
   routes: constantRouterMap
 })
-
