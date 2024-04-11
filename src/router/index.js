@@ -79,7 +79,7 @@ export const asyncRouterMap = [
         path: 'updateProductCate',
         name: 'updateProductCate',
         component: () => import('@/views/pms/productCate/update'),
-        meta: {title: '修改商品分类'},
+        meta: {title: 'updateProductCate'},
         hidden: true
       },
       {
@@ -92,21 +92,21 @@ export const asyncRouterMap = [
         path: 'productAttrList',
         name: 'productAttrList',
         component: () => import('@/views/pms/productAttr/productAttrList'),
-        meta: {title: '商品属性列表'},
+        meta: {title: 'productAttrList'},
         hidden: true
       },
       {
         path: 'addProductAttr',
         name: 'addProductAttr',
         component: () => import('@/views/pms/productAttr/addProductAttr'),
-        meta: {title: '添加商品属性'},
+        meta: {title: 'addProductAttr'},
         hidden: true
       },
       {
         path: 'updateProductAttr',
         name: 'updateProductAttr',
         component: () => import('@/views/pms/productAttr/updateProductAttr'),
-        meta: {title: '修改商品属性'},
+        meta: {title: 'updateProductAttr'},
         hidden: true
       },
       {
@@ -119,14 +119,14 @@ export const asyncRouterMap = [
         path: 'addBrand',
         name: 'addBrand',
         component: () => import('@/views/pms/brand/add'),
-        meta: {title: '添加品牌'},
+        meta: {title: 'addBrand'},
         hidden: true
       },
       {
         path: 'updateBrand',
         name: 'updateBrand',
         component: () => import('@/views/pms/brand/update'),
-        meta: {title: '编辑品牌'},
+        meta: {title: 'updateBrand'},
         hidden: true
       }
     ]
@@ -154,28 +154,28 @@ export const asyncRouterMap = [
         path: 'allocMenu',
         name: 'allocMenu',
         component: () => import('@/views/ums/role/allocMenu'),
-        meta: {title: '分配菜单'},
+        meta: {title: 'allocMenu'},
         hidden: true
       },
       {
         path: 'allocResource',
         name: 'allocResource',
         component: () => import('@/views/ums/role/allocResource'),
-        meta: {title: '分配资源'},
+        meta: {title: 'allocResource'},
         hidden: true
       },
       {
         path: 'addMenu',
         name: 'addMenu',
         component: () => import('@/views/ums/menu/add'),
-        meta: {title: '添加菜单'},
+        meta: {title: 'addMenu'},
         hidden: true
       },
       {
         path: 'updateMenu',
         name: 'updateMenu',
         component: () => import('@/views/ums/menu/update'),
-        meta: {title: '修改菜单'},
+        meta: {title: 'updateMenu'},
         hidden: true
       },
     ]
