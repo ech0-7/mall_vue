@@ -151,6 +151,12 @@ export const asyncRouterMap = [
         meta: {title: 'role-list', icon: 'ums-role'}
       },
       {
+        path: 'menu',
+        name: 'menu',
+        component: () => import('@/views/ums/menu/index'),
+        meta: {title: 'menu-list', icon: 'ums-menu'}
+      },
+      {
         path: 'allocMenu',
         name: 'allocMenu',
         component: () => import('@/views/ums/role/allocMenu'),
@@ -178,6 +184,19 @@ export const asyncRouterMap = [
         meta: {title: 'updateMenu'},
         hidden: true
       },
+      {
+        path: 'resource',
+        name: 'resource',
+        component: () => import('@/views/ums/resource/index'),
+        meta: {title: 'resource-list', icon: 'ums-resource'}
+      },
+      {
+        path: 'resourceCategory',
+        name: 'resourceCategory',
+        component: () => import('@/views/ums/resource/categoryList'),
+        meta: {title: 'resourceCategory-list'},
+        hidden: true
+      }
     ]
   },
   {path: '*', redirect: '/404', hidden: true}

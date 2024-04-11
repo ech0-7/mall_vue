@@ -10,8 +10,8 @@
       :props="defaultProps">
     </el-tree>
     <div style="margin-top: 20px" align="center">
-      <el-button type="primary" @click="handleSave()">保存</el-button>
-      <el-button @click="handleClear()">清空</el-button>
+      <el-button type="primary" @click="handleSave()">Save</el-button>
+      <el-button @click="handleClear()">Clear</el-button>
     </div>
 
   </el-card>
@@ -71,9 +71,9 @@
             }
           }
         }
-        this.$confirm('是否分配菜单？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('Are you sure you want to allocate menus?', 'Confirmation', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(()=>{
           let params = new URLSearchParams();
@@ -81,7 +81,7 @@
           params.append("menuIds",Array.from(checkedMenuIds));
           allocMenu(params).then(response => {
             this.$message({
-              message: '分配成功',
+              message: 'Allocation successful',
               type: 'success',
               duration: 1000
             });
