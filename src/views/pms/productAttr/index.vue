@@ -1,13 +1,13 @@
-<template> 
+<template>
   <div class="app-container">
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
-      <span style="margin-top: 5px">数据列表</span>
+      <span style="margin-top: 5px">Data List</span>
       <el-button
         class="btn-add"
         @click="addProductAttrCate()"
         size="mini">
-        添加
+        Add
       </el-button>
     </el-card>
     <div class="table-container">
@@ -16,40 +16,40 @@
                 :data="list"
                 v-loading="listLoading"
                 border>
-        <el-table-column label="编号" width="100" align="center">
+        <el-table-column label="ID" width="100" align="center">
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
-        <el-table-column label="类型名称" align="center">
+        <el-table-column label="Type Name" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="属性数量" width="200" align="center">
+        <el-table-column label="Attribute Count" width="200" align="center">
           <template slot-scope="scope">{{scope.row.attributeCount==null?0:scope.row.attributeCount}}</template>
         </el-table-column>
-        <el-table-column label="参数数量" width="200" align="center">
+        <el-table-column label="Parameter Count" width="200" align="center">
           <template slot-scope="scope">{{scope.row.paramCount==null?0:scope.row.paramCount}}</template>
         </el-table-column>
-        <el-table-column label="设置" width="200" align="center">
+        <el-table-column label="Settings" width="200" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="getAttrList(scope.$index, scope.row)">属性列表
+              @click="getAttrList(scope.$index, scope.row)">Attribute List
             </el-button>
             <el-button
               size="mini"
-              @click="getParamList(scope.$index, scope.row)">参数列表
+              @click="getParamList(scope.$index, scope.row)">Parameter List
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="Operation" width="200" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleUpdate(scope.$index, scope.row)">编辑
+              @click="handleUpdate(scope.$index, scope.row)">Edit
             </el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除
+              @click="handleDelete(scope.$index, scope.row)">Delete
             </el-button>
           </template>
         </el-table-column>
@@ -73,13 +73,13 @@
       :before-close="handleClose()"
       width="30%">
       <el-form ref="productAttrCatForm":model="productAttrCate" :rules="rules" label-width="120px">
-        <el-form-item label="类型名称" prop="name">
+        <el-form-item label="Type Name" prop="name">
           <el-input v-model="productAttrCate.name" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleConfirm('productAttrCatForm')">确 定</el-button>
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleConfirm('productAttrCatForm')">Confirm</el-button>
       </span>
     </el-dialog>
   </div>
@@ -106,7 +106,7 @@
         },
         rules: {
           name: [
-            { required: true, message: '请输入类型名称', trigger: 'blur' }
+            { required: true, message: 'Please enter the type name', trigger: 'blur' }
           ]
         }
       }
@@ -125,7 +125,7 @@
       },
       addProductAttrCate() {
         this.dialogVisible = true;
-        this.dialogTitle = "添加类型";
+        this.dialogTitle = "Add Type";
       },
       handleSizeChange(val) {
         this.listQuery.pageNum = 1;
@@ -137,14 +137,16 @@
         this.getList();
       },
       handleDelete(index, row) {
-        this.$confirm('是否要删除该品牌', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('Are you sure you want to delete this brand?',
+
+ 'Prompt', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
           deleteProductAttrCate(row.id).then(response=>{
             this.$message({
-              message: '删除成功',
+              message: 'Delete successful',
               type: 'success',
               duration:1000
             });
@@ -154,7 +156,7 @@
       },
       handleUpdate(index, row) {
         this.dialogVisible = true;
-        this.dialogTitle = "编辑类型";
+        this.dialogTitle = "Edit Type";
         this.productAttrCate.name = row.name;
         this.productAttrCate.id = row.id;
       },
@@ -169,10 +171,10 @@
           if (valid) {
             let data = new URLSearchParams();
             data.append("name",this.productAttrCate.name);
-            if(this.dialogTitle==="添加类型"){
+            if(this.dialogTitle==="Add Type"){
               createProductAttrCate(data).then(response=>{
                 this.$message({
-                  message: '添加成功',
+                  message: 'Add successful',
                   type: 'success',
                   duration:1000
                 });
@@ -182,7 +184,7 @@
             }else{
               updateProductAttrCate(this.productAttrCate.id,data).then(response=>{
                 this.$message({
-                  message: '修改成功',
+                  message: 'Modify successful',
                   type: 'success',
                   duration:1000
                 });
@@ -206,5 +208,3 @@
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 </style>
-
-

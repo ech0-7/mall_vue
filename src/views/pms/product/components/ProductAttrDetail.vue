@@ -1,9 +1,9 @@
 <template>
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" label-width="120px" class="form-inner-container" size="small">
-      <el-form-item label="属性类型：">
+      <el-form-item label="Attribute Type:">
         <el-select v-model="value.productAttributeCategoryId"
-                   placeholder="请选择属性类型"
+                   placeholder="Please select attribute type"
                    @change="handleProductAttrChange">
           <el-option
             v-for="item in productAttributeCategoryOptions"
@@ -13,10 +13,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="商品规格：">
+      <el-form-item label="Product Specifications:">
         <el-card shadow="never" class="cardBg">
           <div v-for="(productAttr,idx) in selectProductAttr">
-            {{productAttr.name}}：
+            {{productAttr.name}}:
             <el-checkbox-group v-if="productAttr.handAddStatus===0" v-model="selectProductAttr[idx].values">
               <el-checkbox v-for="item in getInputListArr(productAttr.inputList)" :label="item" :key="item"
                            class="littleMarginLeft"></el-checkbox>
@@ -26,12 +26,12 @@
                 <div v-for="(item,index) in selectProductAttr[idx].options" style="display: inline-block"
                      class="littleMarginLeft">
                   <el-checkbox :label="item" :key="item"></el-checkbox>
-                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">删除
+                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">Remove
                   </el-button>
                 </div>
               </el-checkbox-group>
               <el-input v-model="addProductAttrValue" style="width: 160px;margin-left: 10px" clearable></el-input>
-              <el-button class="littleMarginLeft" @click="handleAddProductAttrValue(idx)">增加</el-button>
+              <el-button class="littleMarginLeft" @click="handleAddProductAttrValue(idx)">Add</el-button>
             </div>
           </div>
         </el-card>
@@ -48,7 +48,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="销售价格"
+            label="Sale Price"
             width="100"
             align="center">
             <template slot-scope="scope">
@@ -56,7 +56,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="促销价格"
+            label="Promotion Price"
             width="100"
             align="center">
             <template slot-scope="scope">
@@ -64,7 +64,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="商品库存"
+            label="Product Stock"
             width="80"
             align="center">
             <template slot-scope="scope">
@@ -72,7 +72,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="库存预警值"
+            label="Low Stock"
             width="80"
             align="center">
             <template slot-scope="scope">
@@ -80,7 +80,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="SKU编号"
+            label="SKU Code"
             width="160"
             align="center">
             <template slot-scope="scope">
@@ -88,13 +88,13 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            label="Operation"
             width="80"
             align="center">
             <template slot-scope="scope">
               <el-button
                 type="text"
-                @click="handleRemoveProductSku(scope.$index, scope.row)">删除
+                @click="handleRemoveProductSku(scope.$index, scope.row)">Delete
               </el-button>
             </template>
           </el-table-column>
@@ -102,20 +102,20 @@
         <el-button
           type="primary"
           style="margin-top: 20px"
-          @click="handleRefreshProductSkuList">刷新列表
+          @click="handleRefreshProductSkuList">Refresh List
         </el-button>
         <el-button
           type="primary"
           style="margin-top: 20px"
-          @click="handleSyncProductSkuPrice">同步价格
+          @click="handleSyncProductSkuPrice">Sync Price
         </el-button>
         <el-button
           type="primary"
           style="margin-top: 20px"
-          @click="handleSyncProductSkuStock">同步库存
+          @click="handleSyncProductSkuStock">Sync Stock
         </el-button>
       </el-form-item>
-      <el-form-item label="属性图片：" v-if="hasAttrPic">
+      <el-form-item label="Attribute Image:" v-if="hasAttrPic">
         <el-card shadow="never" class="cardBg">
           <div v-for="(item,index) in selectProductAttrPics">
             <span>{{item.name}}:</span>
@@ -124,7 +124,7 @@
           </div>
         </el-card>
       </el-form-item>
-      <el-form-item label="商品参数：">
+      <el-form-item label="Product Parameters:">
         <el-card shadow="never" class="cardBg">
           <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
             <div class="paramInputLabel">{{item.name}}:</div>
@@ -140,22 +140,22 @@
           </div>
         </el-card>
       </el-form-item>
-      <el-form-item label="商品相册：">
+      <el-form-item label="Product Gallery:">
         <multi-upload v-model="selectProductPics"></multi-upload>
       </el-form-item>
-      <el-form-item label="商品详情：">
+      <el-form-item label="Product Details:">
         <el-tabs v-model="activeHtmlName" type="card">
-          <el-tab-pane label="电脑端详情" name="pc">
+          <el-tab-pane label="Desktop Details" name="pc">
             <tinymce :width="595" :height="300" v-model="value.detailHtml"></tinymce>
           </el-tab-pane>
-          <el-tab-pane label="移动端详情" name="mobile">
+          <el-tab-pane label="Mobile Details" name="mobile">
             <tinymce :width="595" :height="300" v-model="value.detailMobileHtml"></tinymce>
           </el-tab-pane>
         </el-tabs>
       </el-form-item>
       <el-form-item style="text-align: center">
-        <el-button size="medium" @click="handlePrev">上一步，填写商品促销</el-button>
-        <el-button type="primary" size="medium" @click="handleNext">下一步，选择商品关联</el-button>
+        <el-button size="medium" @click="handlePrev">Previous, Fill in Product Promotion</el-button>
+        <el-button type="primary" size="medium" @click="handleNext">Next, Select Product Association</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -386,7 +386,7 @@
         let options = this.selectProductAttr[idx].options;
         if (this.addProductAttrValue == null || this.addProductAttrValue == '') {
           this.$message({
-            message: '属性值不能为空',
+            message: 'not null',
             type: 'warning',
             duration: 1000
           });
@@ -394,7 +394,7 @@
         }
         if (options.indexOf(this.addProductAttrValue) !== -1) {
           this.$message({
-            message: '属性值不能重复',
+            message: 'not unique',
             type: 'warning',
             duration: 1000
           });
@@ -415,9 +415,9 @@
         }
       },
       handleRefreshProductSkuList() {
-        this.$confirm('刷新列表将导致sku信息重新生成，是否要刷新', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('Refreshing the list will cause the SKU information to be regenerated. Are you sure you want to refresh it?', 'Prompt', {
+          confirmButtonText: 'yes',
+          cancelButtonText: 'no',
           type: 'warning'
         }).then(() => {
           this.refreshProductAttrPics();
@@ -425,9 +425,9 @@
         });
       },
       handleSyncProductSkuPrice(){
-        this.$confirm('将同步第一个sku的价格到所有sku,是否继续', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('Do you want to synchronize the price of the first SKU to all SKUs?', 'Prompt', {
+          confirmButtonText: 'yes',
+          cancelButtonText: 'no',
           type: 'warning'
         }).then(() => {
           if(this.value.skuStockList!==null&&this.value.skuStockList.length>0){
@@ -443,9 +443,9 @@
         });
       },
       handleSyncProductSkuStock(){
-        this.$confirm('将同步第一个sku的库存到所有sku,是否继续', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('Do you want to synchronize the stock of the first SKU to all SKUs?', 'Prompt', {
+          confirmButtonText: 'yes',
+          cancelButtonText: 'no',
           type: 'warning'
         }).then(() => {
           if(this.value.skuStockList!==null&&this.value.skuStockList.length>0){

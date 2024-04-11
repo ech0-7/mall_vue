@@ -351,10 +351,10 @@
         }],
         verifyStatusOptions: [{
           value: 1,
-          label: 'review passed'
+          label: 'review pass'
         }, {
           value: 0,
-          label: 'unreview'
+          label: 'unreviewed'
         }]
       }
     },
@@ -376,9 +376,9 @@
     filters: {
       verifyStatusFilter(value) {
         if (value === 1) {
-          return 'review passed';
+          return 'review pass';
         } else {
-          return 'unreview';
+          return 'unreviewed';
         }
       }
     },
@@ -637,5 +637,6 @@
   }
 </script>
 <style></style>
+
 
 

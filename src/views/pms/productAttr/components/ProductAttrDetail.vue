@@ -1,11 +1,11 @@
 <template>
   <el-card class="form-container" shadow="never">
     <el-form :model="productAttr" :rules="rules" ref="productAttrFrom" label-width="150px">
-      <el-form-item label="属性名称：" prop="name">
+      <el-form-item label="Attribute Name:" prop="name">
         <el-input v-model="productAttr.name"></el-input>
       </el-form-item>
-      <el-form-item label="商品类型：">
-        <el-select v-model="productAttr.productAttributeCategoryId" placeholder="请选择">
+      <el-form-item label="Product Type:">
+        <el-select v-model="productAttr.productAttributeCategoryId" placeholder="Please select">
           <el-option
             v-for="item in productAttrCateList"
             :key="item.id"
@@ -14,53 +14,53 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="分类筛选样式:">
+      <el-form-item label="Category Filter Style:">
         <el-radio-group v-model="productAttr.filterType">
-          <el-radio :label="0">普通</el-radio>
-          <el-radio :label="1">颜色</el-radio>
+          <el-radio :label="0">Normal</el-radio>
+          <el-radio :label="1">Color</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="能否进行检索:">
+      <el-form-item label="Can be Searched:">
         <el-radio-group v-model="productAttr.searchType">
-          <el-radio :label="0">不需要检索</el-radio>
-          <el-radio :label="1">关键字检索</el-radio>
-          <el-radio :label="2">范围检索</el-radio>
+          <el-radio :label="0">No Need</el-radio>
+          <el-radio :label="1">Keyword Search</el-radio>
+          <el-radio :label="2">Range Search</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="商品属性关联:">
+      <el-form-item label="Product Attribute Association:">
         <el-radio-group v-model="productAttr.relatedStatus">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="1">Yes</el-radio>
+          <el-radio :label="0">No</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="属性是否可选:">
+      <el-form-item label="Is Attribute Optional:">
         <el-radio-group v-model="productAttr.selectType">
-          <el-radio :label="0">唯一</el-radio>
-          <el-radio :label="1">单选</el-radio>
-          <el-radio :label="2">复选</el-radio>
+          <el-radio :label="0">Unique</el-radio>
+          <el-radio :label="1">Single Selection</el-radio>
+          <el-radio :label="2">Multiple Selection</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="属性值的录入方式:">
+      <el-form-item label="Attribute Value Input Method:">
         <el-radio-group v-model="productAttr.inputType">
-          <el-radio :label="0">手工录入</el-radio>
-          <el-radio :label="1">从下面列表中选择</el-radio>
+          <el-radio :label="0">Manual Input</el-radio>
+          <el-radio :label="1">Select from List Below</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="属性值可选值列表:">
+      <el-form-item label="Attribute Value Options List:">
         <el-input :autosize="true" type="textarea" v-model="inputListFormat"></el-input>
       </el-form-item>
-      <el-form-item label="是否支持手动新增:">
+      <el-form-item label="Support Manual Addition:">
         <el-radio-group v-model="productAttr.handAddStatus">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="1">Yes</el-radio>
+          <el-radio :label="0">No</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="排序属性：">
+      <el-form-item label="Sort Attribute:">
         <el-input v-model="productAttr.sort"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('productAttrFrom')">提交</el-button>
-        <el-button  v-if="!isEdit" @click="resetForm('productAttrFrom')">重置</el-button>
+        <el-button type="primary" @click="onSubmit('productAttrFrom')">Submit</el-button>
+        <el-button  v-if="!isEdit" @click="resetForm('productAttrFrom')">Reset</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -96,8 +96,8 @@
         productAttr: Object.assign({}, defaultProductAttr),
         rules: {
           name: [
-            {required: true, message: '请输入属性名称', trigger: 'blur'},
-            {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
+            {required: true, message: 'Please enter attribute name', trigger: 'blur'},
+            {min: 2, max: 140, message: 'Length between 2 and 140 characters', trigger: 'blur'}
           ]
         },
         productAttrCateList: null,
@@ -136,15 +136,15 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$confirm('是否提交数据', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
+            this.$confirm('Submit data?', 'Warning', {
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Cancel',
               type: 'warning'
             }).then(() => {
               if(this.isEdit){
                 updateProductAttr(this.$route.query.id,this.productAttr).then(response=>{
                   this.$message({
-                    message: '修改成功',
+                    message: 'Updated successfully',
                     type: 'success',
                     duration: 1000
                   });
@@ -153,7 +153,7 @@
               }else{
                 createProductAttr(this.productAttr).then(response=>{
                   this.$message({
-                    message: '提交成功',
+                    message: 'Submitted successfully',
                     type: 'success',
                     duration: 1000
                   });
@@ -164,7 +164,7 @@
 
           } else {
             this.$message({
-              message: '验证失败',
+              message: 'Validation failed',
               type: 'error',
               duration: 1000
             });
